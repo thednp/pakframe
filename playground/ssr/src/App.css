@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, system;
+}
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  /* prefersdark: true; */
+  color-scheme: light;
+  --color-primary: oklch(0.65 0.21 27.76);
+  --color-primary-content: oklch(1 0 0);
+  --color-accent: oklch(0.68 0.26 339.44);
+  --color-accent-content: oklch(1 0 0);
+  --color-secondary: oklch(0.54 0.26 291.19);
+  --color-success: oklch(0.86 0.25 140.02);
+  --color-success-content: oklch(0 0 0);
+  --color-info: oklch(0.66 0.17 252.04);
+  --color-info-content: oklch(1 0 0);
+  --color-warning: oklch(0.91 0.18 103.8);
+  --color-warning-content: oklch(0 0 0);
+}
+@plugin "daisyui/theme" {
+  name: "dark";
+  default: false;
+  color-scheme: dark;
+  prefersdark: true;
+  --color-base-100: oklch(0% 0 0);
+  --color-base-200: oklch(19% 0 0);
+  --color-base-300: oklch(22% 0 0);
+  --color-primary: oklch(0.65 0.21 27.76);
+  --color-primary-content: oklch(1 0 0);
+  --color-accent: oklch(0.68 0.26 339.44);
+  --color-accent-content: oklch(1 0 0);
+  --color-secondary: oklch(0.54 0.26 291.19);
+  --color-success: oklch(0.86 0.25 140.02);
+  --color-success-content: oklch(0 0 0);
+  --color-info: oklch(0.66 0.17 252.04);
+  --color-info-content: oklch(1 0 0);
+  --color-warning: oklch(0.91 0.18 103.8);
+  --color-warning-content: oklch(0 0 0);
+}
+
+.tooltip {
+  /* disable show on hover */
+  &:not(.tooltip-open)::after,
+  &:not(.tooltip-open) .tooltip-content {
+    @apply invisible opacity-0;
+  }
+  /*.tooltip-top|.tooltip-bottom*/
+  &.shift-left .tooltip-content {
+    @apply translate-x-[50%] left-auto right-0;
+  }
+  &.shift-right .tooltip-content {
+    @apply translate-x-[50%] left-0 right-auto;
+  }
+
+  /*.tooltip-left|.tooltip-right*/
+  &.shift-up .tooltip-content {
+    @apply translate-y-[50%] bottom-0 top-auto;
+  }
+  &.shift-down .tooltip-content {
+    @apply translate-y-[50%] top-0 bottom-auto;
+  }
+}
+
+.dropdown {
+  /* .dropdown-menu {} */
+  /* disable show on hover */
+  &:not(.dropdown-open) .dropdown-content {
+    @apply invisible opacity-0;
+  }
+  /*.dropdown-top|.dropdown-bottom*/
+  &.shift-left .dropdown-content {
+    @apply translate-x-0 left-auto right-0;
+  }
+  &.shift-right .dropdown-content {
+    @apply translate-x-0 left-0;  
+  }
+
+  /*.dropdown-left|.dropdown-right*/
+  &.shift-up .dropdown-content {
+    @apply translate-y-0 bottom-0 top-auto;
+  }
+  &.shift-down .dropdown-content {
+    @apply translate-y-0 top-0 bottom-auto;
+  }
+}
+
+.modal {
+  scrollbar-gutter: auto;
+}

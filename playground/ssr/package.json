@@ -1,0 +1,34 @@
+{
+  "name": "framework-starter-template-ts",
+  "description": "⚛️ A lightweight, reactive TypeScript framework for building dynamic web interfaces.",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "author": "thednp",
+  "sideEffects": false,
+  "scripts": {
+    "dev": "node server",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "NODE_ENV=production vite build --sourcemap=false --ssrManifest .vite/ssr-manifest.json --outDir dist/client --mode=production",
+    "build:server": "NODE_ENV=production vite build --sourcemap=false --ssr src/entry-server.ts --outDir dist/server --mode=production",
+    "generate": "npm run build:client && NODE_ENV=production vite build --sourcemap=false --ssrManifest .vite/ssr-manifest.json --outDir dist/static && npm run build:server && node prerender --mode=production",
+    "preview": "npm run generate && NODE_ENV=production STATIC=true node server --port 5173",
+    "start": "NODE_ENV=production node server"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.14",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "4.1.5",
+    "compression": "^1.8.0",
+    "daisyui": "5.0.35",
+    "express": "^5.1.0",
+    "pakframe": "link:../..",
+    "sirv": "^3.0.1",
+    "tailwindcss": "4.1.8"
+  }
+}
