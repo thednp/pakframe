@@ -16,6 +16,6 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "pakframe": "link:../.."
+    "pakframe": "github:thednp/pakframe"
   }
 }

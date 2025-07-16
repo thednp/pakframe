@@ -183,7 +183,7 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
 // console.log({ signal });
 import * as ROUTER from "pakframe/router";
 // import { Route, routes, lazy } from "pakframe/router";
-// const { Route, routes, lazy } = ROUTER;
+const { Route, routes, lazy } = ROUTER;
 // import { Route } from "pakframe/router/Route";
 // import { routes } from "pakframe/router/routes";
 // import { lazy } from "pakframe/router/lazy";
