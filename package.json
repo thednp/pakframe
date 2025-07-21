@@ -9,14 +9,15 @@
   "scripts": {
     "dev": "vite",
     "build__": "rolldown --config rolldown.config.ts",
-    "build": "tsdown",
+    "build": "tsdown && pnpm build-plugin",
+    "build-plugin": "tsdown --config vite/tsdown.config.ts",
     "build_": "tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/node": "^24.0.13",
+    "@types/node": "^24.0.14",
     "rolldown": "1.0.0-beta.27",
-    "rolldown-plugin-dts": "^0.13.13",
+    "rolldown-plugin-dts": "^0.13.14",
     "tsdown": "^0.12.9",
     "typescript": "~5.8.3",
     "vite": "^6.3.5"
@@ -32,6 +33,11 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.cts",
+  "files": [
+    "dist",
+    "package.json",
+    "LICENSE"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -56,10 +62,6 @@
     "./ssr": {
       "import": "./dist/ssr.js",
       "require": "./dist/ssr.cjs"
-    },
-    "./vite": {
-      "import": "./dist/vite.js",
-      "require": "./dist/vite.cjs"
     },
     "./package.json": "./package.json"
   }

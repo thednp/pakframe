@@ -7,8 +7,9 @@ import {
   transformWithEsbuild,
   type ViteDevServer,
 } from "vite";
-import { routes } from "../router/routes";
+// import { routes } from "../router/routes";
 // import { routes } from "pakframe/router";
+import { routes } from "pakframe/router";
 import type { RouteFile } from "../router/types";
 import { generateRoute, getRoutes } from "../helpers/fs-helpers";
 import type { PackframePluginOptions } from "./types";
@@ -85,7 +86,7 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
             // "@pakframe/*": toAbsolute("./"),
             // "@pakframe/ssr": toAbsolute("./ssr.js"),
             // "@pakframe/router": toAbsolute("../src/router/index.ts"),
-            "@pakframe/router": fileURLToPath(new URL("router.js", import.meta.url)),
+            "@pakframe/router": fileURLToPath(new URL("./router.js", import.meta.url)),
             // "@pakframe/router": toAbsolute("./router"),
             // "@pakframe/fs-routes": toAbsolute("./"),
           },
@@ -181,9 +182,9 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
         const routesScript = `
 // import { signal } from "pakframe/ssr";
 // console.log({ signal });
-import * as ROUTER from "pakframe/router";
-// import { Route, routes, lazy } from "pakframe/router";
-const { Route, routes, lazy } = ROUTER;
+// import * as ROUTER from "pakframe/router";
+import { Route, routes, lazy } from "pakframe/router";
+// const { Route, routes, lazy } = ROUTER;
 // import { Route } from "pakframe/router/Route";
 // import { routes } from "pakframe/router/routes";
 // import { lazy } from "pakframe/router/lazy";
@@ -194,12 +195,15 @@ const { Route, routes, lazy } = ROUTER;
 // import { Route } from "@pakframe/router/Route.js";
 // import { routes } from "@pakframe/router/routes.js";
 // import { lazy } from "@pakframe/router/lazy.js";
-// console.log({ Route, routes, lazy })
-console.log({ ROUTER })
+console.log({ Route, routes, lazy })
+// console.log({ ROUTER })
 
 // Reset current routes
-if (ROUTER.routes) {
-  ROUTER.routes.length = 0;
+// if (ROUTER.routes) {
+//   ROUTER.routes.length = 0;
+// }
+if (routes) {
+  routes.length = 0;
 }
 
 // Register routes

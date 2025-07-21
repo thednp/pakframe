@@ -10,6 +10,10 @@ declare module "@router" {
   export * from "pakframe/router";
 }
 
+declare module "@pakframe/router" {
+  export * from "pakframe/router";
+}
+
 declare module "@meta" {
   export * from "pakframe/meta";
 }

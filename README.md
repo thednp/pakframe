@@ -17,19 +17,19 @@ When creating a new vite project, this should be the JavaScript / TypeScript sta
 ## Installation
 
 ```bash
-npm install packframe
+npm install pakframe
 ```
 
 ```bash
-pnpm add packframe
+pnpm add pakframe
 ```
 
 ```bash
-deno add packframe
+deno add pakframe
 ```
 
 ```bash
-bun add packframe
+bun add pakframe
 ```
 
 ## Wiki
@@ -176,4 +176,4 @@ This project was started as a [framework starter](https://github.com/thednp/fram
 
 
 ## License
-[MIT](LICENSE License). Feel free to use, modify, and distribute this framework.
+[MIT License](LICENSE). Feel free to use, modify, and distribute this framework.
