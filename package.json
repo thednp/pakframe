@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build__": "rolldown --config rolldown.config.ts",
-    "build": "tsdown && pnpm build-plugin",
+    "build": "tsdown",
     "build-plugin": "tsdown --config vite/tsdown.config.ts",
     "build_": "tsc && vite build",
     "preview": "vite preview"
@@ -63,6 +63,10 @@
     "./ssr": {
       "import": "./dist/ssr.js",
       "require": "./dist/ssr.cjs"
+    },
+    "./vite": {
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
     },
     "./package.json": "./package.json"
   }

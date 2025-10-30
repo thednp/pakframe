@@ -1,4 +1,4 @@
-import { CSSProperties, ChildAccessor, ChildArray, DOMElement, DOMNodeAttributes, FunctionMaybe, MathMLElementTags, MaybeChildNode, OutputElement, PropValueOrAccessor, TagNames } from "./types-pzt1ZtaD.js";
+import { CSSProperties, ChildAccessor, ChildArray, DOMElement, DOMNodeAttributes, FunctionMaybe, MathMLElementTags, MaybeChildNode, OutputElement, PropValueOrAccessor, TagNames } from "./types-CjexJQM1.cjs";
 import { Setter } from "../../dist";
 
 //#region src/jsx/types.d.ts
@@ -1598,4 +1598,4 @@ declare const Fragment: ({
 }) => JSX.Element;
 //#endregion
 export { Fragment, type JSX, jsx };
-//# sourceMappingURL=jsx-DE3NWBCf.d.ts.map
+//# sourceMappingURL=jsx-DX30_OTM.d.cts.map

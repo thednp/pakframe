@@ -1,31 +1,8 @@
-import { CSSProperties, ChildAccessor, ChildArray, DOMElement, DOMNodeAttributes, FunctionMaybe, MathMLElementTags, MaybeChildNode, OutputElement, PropValueOrAccessor, TagNames } from "./types-CjexJQM1.cjs";
-import { Properties, PropertiesHyphen, SvgProperties, SvgPropertiesHyphen } from "csstype";
+import { CSSProperties, ChildAccessor, ChildArray, DOMElement, DOMNodeAttributes, FunctionMaybe, MathMLElementTags, MaybeChildNode, OutputElement, PropValueOrAccessor, TagNames } from "./types-pzt1ZtaD.js";
+import { Setter } from "../../dist";
 
-//#region dist/types-pzt1ZtaD.d.ts
-
-//#endregion
-//#region src/types/global.d.ts
-declare module "@core" {
-  export * from "pakframe";
-}
-declare module "@ssr" {
-  export * from "pakframe/ssr";
-}
-declare module "@router" {
-  export * from "pakframe/router";
-}
-declare module "@pakframe/router" {
-  export * from "pakframe/router";
-}
-declare module "@meta" {
-  export * from "pakframe/meta";
-}
-//#endregion
-//#region src/types/types.d.ts
-
-type Setter<T> = (val: T | ((v: T) => T)) => T extends Function ? T : void;
-//#endregion
 //#region src/jsx/types.d.ts
+
 type Component<K extends TagNames> = (props: ComponentProps<K>) => JSX.Element;
 type ComponentProps<K extends TagNames> = Omit<JSX.IntrinsicElements[K], "children" | "style"> & DOMNodeAttributes<JSX.IntrinsicElements[K], K> & {
   style?: FunctionMaybe<string | CSSProperties>;
@@ -1621,4 +1598,4 @@ declare const Fragment: ({
 }) => JSX.Element;
 //#endregion
 export { Fragment, type JSX, jsx };
-//# sourceMappingURL=jsx-BUX8hrxT.d.cts.map
+//# sourceMappingURL=jsx-BHJHZ-tZ.d.ts.map
