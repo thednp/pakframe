@@ -9,9 +9,6 @@ import { unwrap } from "./unwrap";
 import { hydrate } from "../core/hydrate";
 import { Head, initializeHeadTags } from "../meta";
 
-// @ts-expect-error - typescript may never know what's this
-// import "virtual:@pakframe/routes";
-// import "@pakframe/fs-routes";
 
 let isConnected = false;
 
@@ -129,17 +126,16 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
     const component = () => {
       const kids = children();
       const result = () => {
-        return memo(() =>
-          hydrate(wrapper, (el) => {
-            const kudos = kids;
-            isConnected = true;
-            // istanbul ignore else
-            // if (document.head) {
-            //   hydrate(document.head, (head) => hydrate(head, Head()));
-            // }
-            return hydrate(el, kudos);
-          })
-        );
+        return (() => {
+
+          hydrate(wrapper, kids);
+          isConnected = true;
+          // istanbul ignore else
+          if (document.head) {
+            hydrate(document.head,  Head());
+          }
+          return wrapper;
+        });
       };
       return result();
     };

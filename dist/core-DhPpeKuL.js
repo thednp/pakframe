@@ -794,12 +794,13 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 		const component = () => {
 			const kids = children();
 			const result = () => {
-				return memo(() => hydrate(wrapper, (el) => {
-					const kudos = kids;
+				return () => {
+					hydrate(wrapper, kids);
 					isConnected = true;
 					// istanbul ignore else
-					return hydrate(el, kudos);
-				}));
+					if (document.head) hydrate(document.head, Head());
+					return wrapper;
+				};
 			};
 			return result();
 		};
@@ -1011,4 +1012,4 @@ function Show({ when, children }) {
 
 //#endregion
 export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store$1 as store, style, styleToString, untrack, unwrap };
-//# sourceMappingURL=core-CK120Hu2.js.map
+//# sourceMappingURL=core-DhPpeKuL.js.map

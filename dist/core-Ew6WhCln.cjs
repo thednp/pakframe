@@ -795,12 +795,13 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 		const component = () => {
 			const kids = children();
 			const result = () => {
-				return memo(() => hydrate(wrapper, (el) => {
-					const kudos = kids;
+				return () => {
+					hydrate(wrapper, kids);
 					isConnected = true;
 					// istanbul ignore else
-					return hydrate(el, kudos);
-				}));
+					if (document.head) hydrate(document.head, Head());
+					return wrapper;
+				};
 			};
 			return result();
 		};
@@ -1275,4 +1276,4 @@ Object.defineProperty(exports, 'unwrap', {
     return unwrap;
   }
 });
-//# sourceMappingURL=core-B87PiiUz.cjs.map
+//# sourceMappingURL=core-Ew6WhCln.cjs.map

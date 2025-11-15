@@ -53,4 +53,4 @@ declare function Show<T>({
 declare function renderPreloadLinks(modules: string[], manifest: Record<string, string[]>): string;
 //#endregion
 export { List, ListProps, Show, add, effect, getStyleObject, h, listen, memo, onMount, renderPreloadLinks, setAttribute, setHydrationKey, signal, store, style, styleToString, untrack };
-//# sourceMappingURL=index-Ce6baPnh.d.ts.map
+//# sourceMappingURL=index-DYNpaI3p.d.ts.map
