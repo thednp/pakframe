@@ -225,7 +225,9 @@ export const generateComponentRoute = (route: RouteFile) => {
     // Only generate imports for unique layouts
     const layoutImports = route.layouts.map(
       (layout) =>
-        `const ${layout.id}Module = await import('${JSON.stringify(layout.path)}');\n` +
+        `const ${layout.id}Module = await import('${
+          JSON.stringify(layout.path)
+        }');\n` +
         `const ${layout.id}Page = ${layout.id}Module.Layout || ${layout.id}Module.Page || ${layout.id}Module.default;`,
     ).join("\n");
 
@@ -235,7 +237,7 @@ export const generateComponentRoute = (route: RouteFile) => {
       "Page()",
     );
 
-    return `ROUTER.lazy(() => {
+    return `lazy(() => {
       const importFn = async () => {
         ${layoutImports}
         const PageModule = await import('${JSON.stringify(route.path)}');
@@ -250,12 +252,12 @@ export const generateComponentRoute = (route: RouteFile) => {
     })`;
   }
 
-  return `ROUTER.lazy(() => import('${route.path}'))`;
+  return `lazy(() => import('${route.path}'))`;
 };
 
 export const generateRoute = (route: RouteFile) => {
-  return `ROUTER.Route({
-    path: "${JSON.stringify(route.routePath)}",
+  return `Route({
+    path: ${JSON.stringify(route.routePath)},
     component: ${generateComponentRoute(route)},
   });`;
 };

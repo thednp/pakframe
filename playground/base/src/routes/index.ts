@@ -1,10 +1,12 @@
-// import "./App.css";
-import { effect, h, signal, type MaybeChildNode } from "pakframe";
 import { Counter, count } from "../components/counter";
 import { TodoApp } from "../components/todo";
 import { Article } from "../components/article";
+import { effect, h, signal, type MaybeChildNode } from "pakframe";
 
-export const route = {}
+
+export const route = {
+    load: () => console.log('load triggered')
+}
 
 export function Page() {
   const ViteLink = h(
@@ -57,22 +59,14 @@ export function Page() {
     )
   )
 
-  return [
-    h("div", 
-      ViteLink,
-      TypeScriptLink,
-      h1,
-    ),
-    h("div",
-      Article(
-        { count, title: "This is an article title", as: "h2" },
-        "This is some child content: ", count
-      ),
-    ),
-    h("div",
-      xPlus1(),
-      Counter(),
-      TodoApp(),
-    ),
-  ];
+  return h(
+    "div",
+    ViteLink,
+    TypeScriptLink,
+    h1,
+    Article({ count, title: () => "This is an article title", as: "h2" }, "This is some child content: "),
+    xPlus1(),
+    Counter(),
+    TodoApp(),
+  );
 }

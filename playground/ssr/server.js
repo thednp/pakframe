@@ -79,7 +79,7 @@ app.use("*all", async (req, res) => {
       template = await vite.transformIndexHtml(url || "/", template);
     } else {
       template = templateHtml;
-      render = (await import("./dist/server/entry-server.js")).render;
+      render = (await import("./dist/server/entry-server.ts")).render;
     }
 
     let html = "";

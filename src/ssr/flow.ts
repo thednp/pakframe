@@ -19,11 +19,11 @@ export const List = <T>(props: ListProps<T>) => {
     for (const item of items) {
       const node = children(item) as DOMElement;
       if (node) nodes.push(node);
-    };
+    }
     if (nodes.length) return nodes;
 
     return placeholder as unknown as DOMElement[];
-  }
+  };
 
   return Layout();
 };
@@ -36,7 +36,7 @@ export function Show<T>({
   children: () => MaybeChildNode;
 }) {
   const placeholder = document.createTextNode("");
-  const initialWhen = () => isFunction(when) ? when() : when
+  const initialWhen = () => isFunction(when) ? when() : when;
   const newNodes = () => {
     const nodes = isFunction(children) ? children() : children;
     return isArray(nodes) ? nodes : [nodes];

@@ -1598,4 +1598,4 @@ declare const Fragment: ({
 }) => JSX.Element;
 //#endregion
 export { Fragment, type JSX, jsx };
-//# sourceMappingURL=jsx-BHJHZ-tZ.d.ts.map
+//# sourceMappingURL=jsx-DE3NWBCf.d.ts.map

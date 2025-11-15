@@ -11,11 +11,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/node": "^24.0.14",
+    "@types/node": "^24.10.1",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.4.1"
   },
   "dependencies": {
-    "pakframe": "github:thednp/pakframe"
+    "pakframe": "link:../.."
   }
 }

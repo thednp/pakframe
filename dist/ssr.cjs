@@ -1,3 +1,4 @@
+require("virtual:@pakframe/routes");
 const require_chunk = require('./chunk-CUT6urMc.cjs');
 const require_store = require('./store-DZCiBSN0.cjs');
 const __thednp_domparser = require_chunk.__toESM(require("@thednp/domparser"));

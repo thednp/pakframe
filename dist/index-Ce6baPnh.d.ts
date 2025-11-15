@@ -36,7 +36,7 @@ type ListProps<T> = {
   each?: () => T[];
   children?: (item: T) => MaybeChildNode;
 };
-declare const List: <T>(props: ListProps<T>) => DOMElement[] | undefined;
+declare const List: <T>(props: ListProps<T>) => (SVGElement | MathMLElement)[] | undefined;
 declare function Show<T>({
   when,
   children
@@ -53,4 +53,4 @@ declare function Show<T>({
 declare function renderPreloadLinks(modules: string[], manifest: Record<string, string[]>): string;
 //#endregion
 export { List, ListProps, Show, add, effect, getStyleObject, h, listen, memo, onMount, renderPreloadLinks, setAttribute, setHydrationKey, signal, store, style, styleToString, untrack };
-//# sourceMappingURL=index-DEsINClF.d.ts.map
+//# sourceMappingURL=index-Ce6baPnh.d.ts.map

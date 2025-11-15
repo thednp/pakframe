@@ -12,13 +12,7 @@ import type {
   Primitive,
   TagNames,
 } from "../types/types";
-import {
-  getStringValue,
-  isArray,
-  isFunction,
-  isNode,
-  isObject,
-} from "../util";
+import { getStringValue, isArray, isFunction, isNode, isObject } from "../util";
 import type { Accessor } from "../types/types";
 
 if (typeof document === "undefined") {
@@ -104,4 +98,3 @@ export function h<K extends TagNames>(
 
   return element;
 }
-

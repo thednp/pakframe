@@ -1,7 +1,6 @@
 const require_chunk = require('./chunk-CUT6urMc.cjs');
 const require_store = require('./store-DZCiBSN0.cjs');
 const __thednp_domparser = require_chunk.__toESM(require("@thednp/domparser"));
-require("virtual:@pakframe/routes");
 
 //#region src/core/state.ts
 let context = [];
@@ -776,7 +775,8 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				if (document.head) hydrate(document.head, Head());
 				return kudos;
 			};
-			return add(wrapper, children$1());
+			add(wrapper, children$1());
+			return wrapper;
 		}
 		const csrRoute = memo(() => {
 			const p = routerState.pathname;
@@ -1275,4 +1275,4 @@ Object.defineProperty(exports, 'unwrap', {
     return unwrap;
   }
 });
-//# sourceMappingURL=core-BGpnARcj.cjs.map
+//# sourceMappingURL=core-B87PiiUz.cjs.map

@@ -127,7 +127,7 @@ const generateComponentRoute = (route) => {
 	if (route.layouts?.length > 0) {
 		const layoutImports = route.layouts.map((layout) => `const ${layout.id}Module = await import('${JSON.stringify(layout.path)}');\nconst ${layout.id}Page = ${layout.id}Module.Layout || ${layout.id}Module.Page || ${layout.id}Module.default;`).join("\n");
 		const pageComponent = route.layouts.reduce((acc, layout) => `${layout.id}Page({ children: ${acc} })`, "Page()");
-		return `ROUTER.lazy(() => {
+		return `lazy(() => {
       const importFn = async () => {
         ${layoutImports}
         const PageModule = await import('${JSON.stringify(route.path)}');
@@ -141,11 +141,11 @@ const generateComponentRoute = (route) => {
       return importFn();
     })`;
 	}
-	return `ROUTER.lazy(() => import('${route.path}'))`;
+	return `lazy(() => import('${route.path}'))`;
 };
 const generateRoute = (route) => {
-	return `ROUTER.Route({
-    path: "${JSON.stringify(route.routePath)}",
+	return `Route({
+    path: ${JSON.stringify(route.routePath)},
     component: ${generateComponentRoute(route)},
   });`;
 };
@@ -176,8 +176,6 @@ function PackframePlugin(options) {
 	const resolvedRoutesVirtualModuleId = "\0" + routesVirtualModuleId;
 	const virtualSSRModuleId = "virtual:@pakframe/ssr";
 	const resolvedVirtualSSRModuleId = "\0" + virtualSSRModuleId;
-	const virtualRouterModuleId = "virtual:@pakframe/router";
-	const resolvedVirtualRouterModuleId = "\0" + virtualRouterModuleId;
 	return {
 		name: "pakframe",
 		enforce: "pre",
@@ -188,18 +186,11 @@ function PackframePlugin(options) {
 						"pakframe",
 						"pakframe/*",
 						"@core",
-						"@ssr",
-						"@router",
-						"@pakframe/*"
+						"@ssr"
 					],
 					external: []
 				},
-				resolve: { alias: {
-					"@ssr": toAbsolute("ssr"),
-					"@core": toAbsolute("index"),
-					"@router": toAbsolute("router"),
-					"@pakframe/router": fileURLToPath(new URL("./router.js", import.meta.url))
-				} },
+				resolve: { alias: { "@core": toAbsolute("index") } },
 				esbuild: {
 					jsx: "automatic",
 					jsxImportSource: "pakframe"
@@ -232,7 +223,6 @@ function PackframePlugin(options) {
 		resolveId(source, _importer = void 0, ops) {
 			const ssr = ops?.ssr;
 			if (source === routesVirtualModuleId) return resolvedRoutesVirtualModuleId;
-			if (source === virtualRouterModuleId) return resolvedVirtualRouterModuleId;
 			if (ssr && (source === "pakframe" || source === "@core")) return resolvedVirtualSSRModuleId;
 			return null;
 		},
@@ -240,9 +230,6 @@ function PackframePlugin(options) {
 			// istanbul ignore else
 			if (id === resolvedVirtualSSRModuleId) return `
           export * from 'pakframe/ssr';
-        `;
-			if (id === resolvedVirtualRouterModuleId) return `
-          export * from 'pakframe/router';
         `;
 			// istanbul ignore else
 			if (id === resolvedRoutesVirtualModuleId) {
@@ -252,28 +239,7 @@ function PackframePlugin(options) {
 					map: null
 				};
 				const routesScript = `
-// import { signal } from "pakframe/ssr";
-// console.log({ signal });
-// import * as ROUTER from "pakframe/router";
 import { Route, routes, lazy } from "pakframe/router";
-// const { Route, routes, lazy } = ROUTER;
-// import { Route } from "pakframe/router/Route";
-// import { routes } from "pakframe/router/routes";
-// import { lazy } from "pakframe/router/lazy";
-// import { Route, routes, lazy } from "@router";
-// import { Route, routes, lazy } from "virtual:@pakframe/router";
-// import { Route, routes, lazy } from "@pakframe/router";
-// import { Route, routes, lazy } from "${toAbsolute("./router.js")}";
-// import { Route } from "@pakframe/router/Route.js";
-// import { routes } from "@pakframe/router/routes.js";
-// import { lazy } from "@pakframe/router/lazy.js";
-console.log({ Route, routes, lazy })
-// console.log({ ROUTER })
-
-// Reset current routes
-// if (ROUTER.routes) {
-//   ROUTER.routes.length = 0;
-// }
 if (routes) {
   routes.length = 0;
 }

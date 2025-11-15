@@ -1,6 +1,6 @@
 // entry-server.js
 import { renderPreloadLinks } from "pakframe/ssr";
-import { setRouterState } from "pakframe/router";
+import { setRouterState, routes } from "pakframe/router";
 // import { Head } from "pakframe/meta";
 import { App } from "./App";
 // import { Header } from "./components/Header";
@@ -11,6 +11,7 @@ export async function render(url: string, manifest: Record<string, string[]>) {
   
   // console.log(typeof App, App, await App())
   const main = (await App() as HTMLElement).outerHTML;
+  // console.log(main, routes)
 
   // console.log( app)
   // const head = await renderToString(Head());

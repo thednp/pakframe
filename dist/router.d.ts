@@ -1,6 +1,5 @@
 import { ChildAccessor, ChildArray, DOMElement, DOMNodeAttributes, DOMTagNameMap, FunctionMaybe, MaybeChildNode } from "./types-pzt1ZtaD.js";
-import "./index-DEsINClF.js";
-import "virtual:@pakframe/routes";
+import "./index-BpWREiYo.js";
 
 //#region src/router/types.d.ts
 

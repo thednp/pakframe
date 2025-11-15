@@ -10,7 +10,7 @@ export type ListProps<T> = {
 
 export const List = <T>(props: ListProps<T>) => {
   const { each, children } = props;
-	let parentElement: DOMElement;
+  let parentElement: DOMElement;
   const placeholder = document.createTextNode("");
   const itemMap = new Map<T, DOMElement>();
   const updateItems = (items: T[]) => {
@@ -26,8 +26,8 @@ export const List = <T>(props: ListProps<T>) => {
         }
       }
       marker = itemMap.get(item) ?? placeholder;
-    };
-  }
+    }
+  };
 
   effect(() => {
     const items = each ? each() : [];
@@ -38,13 +38,13 @@ export const List = <T>(props: ListProps<T>) => {
         itemMap.delete(item);
       }
     }
-    updateItems(items)
+    updateItems(items);
   });
 
   queueMicrotask(() => {
     parentElement = placeholder.parentElement as DOMElement;
     if (isFunction(each)) {
-      updateItems(untrack(each))
+      updateItems(untrack(each));
     }
   });
 
@@ -59,22 +59,22 @@ export function Show<T>({
   children: MaybeChildNode;
 }) {
   const placeholder = document.createTextNode("");
-	const initialWhen = () => isFunction(when) ? when() : when;
-	const newNodes = () => {
-		const nodes = isFunction(children) ? children() : children;
-		return isArray(nodes) ? nodes : [nodes];
-	};
+  const initialWhen = () => isFunction(when) ? when() : when;
+  const newNodes = () => {
+    const nodes = isFunction(children) ? children() : children;
+    return isArray(nodes) ? nodes : [nodes];
+  };
 
   effect(() => {
-		const condition = initialWhen();
-		const nodes = newNodes();
-		const nextElementSibling = placeholder.nextElementSibling;
-		if (condition && (!nextElementSibling || nextElementSibling !== nodes[0])) {
-			placeholder.after(...nodes as DOMElement[]);
-		} else if (!condition && placeholder.nextElementSibling === nodes[0]) {
-			nodes.forEach((node) => (node as DOMElement).remove());
-		}
-	});
+    const condition = initialWhen();
+    const nodes = newNodes();
+    const nextElementSibling = placeholder.nextElementSibling;
+    if (condition && (!nextElementSibling || nextElementSibling !== nodes[0])) {
+      placeholder.after(...nodes as DOMElement[]);
+    } else if (!condition && placeholder.nextElementSibling === nodes[0]) {
+      nodes.forEach((node) => (node as DOMElement).remove());
+    }
+  });
 
   return placeholder as unknown as MaybeChildNode;
 }

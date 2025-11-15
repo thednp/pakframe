@@ -1,4 +1,9 @@
-import type { Accessor, DOMElement, DOMTagNameMap, Primitive } from "../types/types";
+import type {
+  Accessor,
+  DOMElement,
+  DOMTagNameMap,
+  Primitive,
+} from "../types/types";
 
 type PrimitiveChild = Primitive | Accessor<Primitive | undefined | null>;
 

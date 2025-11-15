@@ -10,7 +10,7 @@ const isTag = (target: DOMElement, ...tagNames: string[]) => {
 
 const hasHydrationKeys = (target: Element) => {
   return target.querySelector("[data-hk]") !== undefined;
-}
+};
 
 /**
  * Hydrate a target element
@@ -35,7 +35,7 @@ export const hydrate = (
 
   const wrapper = unwrap(content);
   const currentChildren = Array.from(target.children);
-  const newChildren = wrapper.children as (DOMElement )[];
+  const newChildren = wrapper.children as (DOMElement)[];
 
   if (isTag(target, "head")) {
     // Keep current tags on first hydration
@@ -56,7 +56,9 @@ export const hydrate = (
 
     // Create maps for existing tags
     const existingStyles = new Map(
-      (currentChildren as DOMElement[]).filter((child) => isTag(child, "style", "link"))
+      (currentChildren as DOMElement[]).filter((child) =>
+        isTag(child, "style", "link")
+      )
         .map((child) => [getTagKey(child), child]),
     );
 
@@ -129,14 +131,16 @@ export const hydrate = (
   } else {
     //  Handle Initial Hydration
     if (!target.hasAttribute("data-h")) {
-      if (hasHydrationKeys(target) && currentChildren.length === newChildren.length) {
+      if (
+        hasHydrationKeys(target) &&
+        currentChildren.length === newChildren.length
+      ) {
         currentChildren.forEach((child, i) => {
-          child.replaceChildren(...Array.from(newChildren[i].childNodes))
+          child.replaceChildren(...Array.from(newChildren[i].childNodes));
         });
-      }
-      else target.replaceChildren(...newChildren);
+      } else target.replaceChildren(...newChildren);
       target.setAttribute("data-h", "");
-    //  Handle Subsequent Hydration
+      //  Handle Subsequent Hydration
     } else {
       target.replaceChildren(...newChildren);
     }

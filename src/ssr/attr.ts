@@ -4,17 +4,12 @@ import type {
   FunctionMaybe,
   PropValueOrAccessor,
 } from "../types/types";
-import {
-  isFunction,
-  isObject,
-  needsEncoding,
-  urlAttributes,
-} from "../util";
+import { isFunction, isObject, needsEncoding, urlAttributes } from "../util";
 import { escape } from "@thednp/domparser";
 
-export const setHydrationKey = (target: Element) =>{
-  !target.hasAttribute("data-hk") && target.setAttribute("data-hk", ""); 
-}
+export const setHydrationKey = (target: Element) => {
+  !target.hasAttribute("data-hk") && target.setAttribute("data-hk", "");
+};
 
 /**
  * Sets or removes an attribute with the specified or inferred namespace on an element.
@@ -58,7 +53,7 @@ export const getStyleObject = <T extends CSSProperties>(styleObject: T) => {
   for (const [objKey, rawValue] of Object.entries(styleObject)) {
     key = objKey.split(/(?=[A-Z])/).join("-").toLowerCase() as keyof T;
     // allow state values in style object
-    value = (isFunction(rawValue) ? rawValue() : rawValue) as T[keyof T]
+    value = (isFunction(rawValue) ? rawValue() : rawValue) as T[keyof T];
     if (value) output[key] = value;
   }
   return output;
@@ -86,9 +81,11 @@ export const style = (
   styleValue?: FunctionMaybe<CSSProperties | string | null | undefined>,
 ) => {
   const styleVal = isFunction(styleValue) ? styleValue() : styleValue;
-  const hasReactiveProp = isObject(styleVal) && Object.values(styleVal).some(sv => isFunction(sv));
+  const hasReactiveProp = isObject(styleVal) &&
+    Object.values(styleVal).some((sv) => isFunction(sv));
 
   setAttribute(target, "style", styleToString(styleVal));
-  if (isFunction(styleValue) || hasReactiveProp)
+  if (isFunction(styleValue) || hasReactiveProp) {
     setHydrationKey(target);
+  }
 };

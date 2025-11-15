@@ -10,7 +10,7 @@ import { hydrate } from "../core/hydrate";
 import { Head, initializeHeadTags } from "../meta";
 
 // @ts-expect-error - typescript may never know what's this
-import "virtual:@pakframe/routes";
+// import "virtual:@pakframe/routes";
 // import "@pakframe/fs-routes";
 
 let isConnected = false;
@@ -27,9 +27,9 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
     const route = matchRoute(routerState.pathname);
     /* istanbul ignore else */
     if (!route) {
-			add(wrapper, h("div", "No Route Found"));
-			return wrapper;
-		}
+      add(wrapper, h("div", "No Route Found"));
+      return wrapper;
+    }
 
     routerState.params = route.params || {};
     // Server-side or async component: use renderComponent
@@ -100,7 +100,8 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
         return kudos;
       };
 
-      return add(wrapper, children() as Promise<MaybeChildNode>);
+      add(wrapper, children() as Promise<MaybeChildNode>);
+      return wrapper;
     }
     // this case is when root is for SPA apps
     const csrRoute = memo(() => {
@@ -143,8 +144,8 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
       return result();
     };
     const finalResult = component();
-    if (finalResult) add(wrapper, finalResult)
-    
+    if (finalResult) add(wrapper, finalResult);
+
     return wrapper;
   };
 

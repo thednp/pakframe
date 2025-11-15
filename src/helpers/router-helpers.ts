@@ -1,6 +1,10 @@
 import { isServer } from "../util";
 import { routerState } from "../router/state";
-import type { ComponentFn, ComponentModule, LazyComponent } from "../router/types";
+import type {
+  ComponentFn,
+  ComponentModule,
+  LazyComponent,
+} from "../router/types";
 
 /**
  * Check if selected page is the current page;

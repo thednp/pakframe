@@ -1,6 +1,11 @@
 // src/state.ts
 import { isFunction } from "../util";
-import type { Accessor, ContextEntry, ObserverFn, Setter } from "../types/types";
+import type {
+  Accessor,
+  ContextEntry,
+  ObserverFn,
+  Setter,
+} from "../types/types";
 
 let context: ContextEntry[] = [];
 

@@ -7,13 +7,8 @@ const __dirname = dirname(__filename);
 const toAbsolute = (p: string) => resolve(__dirname, p);
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "@jsx": toAbsolute("./src/framework/jsx"),
-    },
-  },
   esbuild: {
     jsx: "automatic",
-    jsxImportSource: "@jsx",
+    jsxImportSource: "pakframe",
   },
 });

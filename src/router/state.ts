@@ -18,9 +18,9 @@ const initialSearch = !isServer ? globalThis.location.search : "";
 
 type RouterState = {
   pathname: string;
-  searchParams: URLSearchParams,
-  params: Record<string, string>,
-}
+  searchParams: URLSearchParams;
+  params: Record<string, string>;
+};
 
 /**
  * The global router state.

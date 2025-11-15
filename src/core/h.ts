@@ -12,13 +12,7 @@ import type {
   Primitive,
   TagNames,
 } from "../types/types";
-import {
-  getStringValue,
-  isArray,
-  isFunction,
-  isNode,
-  isObject,
-} from "../util";
+import { getStringValue, isArray, isFunction, isNode, isObject } from "../util";
 import type { Accessor } from "../types/types";
 
 // Append children
@@ -41,15 +35,19 @@ export const add = (
   } else if (isFunction(child)) {
     const textNode = document.createTextNode("");
     parent.appendChild(textNode);
-    const realChild = (isFunction(untrack(child as Accessor<Accessor<unknown>>)) ? untrack(child as Accessor<Accessor<unknown>>) : child) as Accessor<
-      MaybeChildNode
-    >;
+    const realChild = (isFunction(untrack(child as Accessor<Accessor<unknown>>))
+      ? untrack(child as Accessor<Accessor<unknown>>)
+      : child) as Accessor<
+        MaybeChildNode
+      >;
 
     effect(() => {
       const value = realChild();
       if (isArray(value)) {
         parent.textContent = "";
-        value.forEach((v) => add(parent, v));
+        value.forEach((v) =>
+          add(parent, v)
+        );
       } else if (isNode(value)) { // Node
         add(parent, child);
       } else { // string | number | bigint | boolean | symbol | Date | RegExp
@@ -69,8 +67,8 @@ export const createDomElement = <
 >(tagName: K) => {
   const ns = namespaceElements[tagName];
   return (ns
-      ? document.createElementNS(ns, tagName)
-      : document.createElement(tagName)) as M;
+    ? document.createElementNS(ns, tagName)
+    : document.createElement(tagName)) as M;
 };
 
 export function listen<K extends keyof HTMLElementEventMap>(

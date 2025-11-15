@@ -1,3 +1,4 @@
+import "virtual:@pakframe/routes";
 import { effect, getStringValue, isArray, isFunction, isNode, isObject, memo, needsEncoding, onMount, signal, store, untrack, urlAttributes } from "./store-JUSkKPgE.js";
 import { createDocument, escape } from "@thednp/domparser";
 import { basename } from "node:path";

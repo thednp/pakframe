@@ -13,7 +13,6 @@ import type {
 import type { MathMLElementTags } from "../types/MathML";
 import type { Setter } from "../../dist";
 
-
 export type Component<K extends TagNames> = (
   props: ComponentProps<K>,
 ) => JSX.Element;

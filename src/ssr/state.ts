@@ -31,7 +31,7 @@ export function signal<T>(value: T) {
 }
 
 export function effect(fn: ObserverFn) {
-  fn()
+  fn();
 }
 
 export function memo<T>(value: () => T) {

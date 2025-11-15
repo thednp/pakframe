@@ -16,7 +16,9 @@ export const Title = (
 /**
  * Add a new `<meta>` tag
  */
-export const Meta = (props: DOMNodeAttributes<PotentialProps<"meta">, "meta">) => {
+export const Meta = (
+  props: DOMNodeAttributes<PotentialProps<"meta">, "meta">,
+) => {
   addMeta(h("meta", props));
   return null;
 };
@@ -24,7 +26,9 @@ export const Meta = (props: DOMNodeAttributes<PotentialProps<"meta">, "meta">) =
 /**
  * Add a new `<link>` tag
  */
-export const Link = (props: DOMNodeAttributes<PotentialProps<"link">, "link">) => {
+export const Link = (
+  props: DOMNodeAttributes<PotentialProps<"link">, "link">,
+) => {
   addMeta(h("link", props));
   return null;
 };

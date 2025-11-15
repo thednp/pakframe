@@ -7,8 +7,6 @@ import {
   transformWithEsbuild,
   type ViteDevServer,
 } from "vite";
-// import { routes } from "../router/routes";
-// import { routes } from "pakframe/router";
 import { routes } from "pakframe/router";
 import type { RouteFile } from "../router/types";
 import { generateRoute, getRoutes } from "../helpers/fs-helpers";
@@ -17,8 +15,6 @@ import type { PackframePluginOptions } from "./types";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const toAbsolute = (p: string) => resolve(__dirname, p);
-
-// console.log(toAbsolute("./router.js"));
 
 const pluginDefaults = {
   routesDir: "src/routes",
@@ -38,9 +34,6 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
   const virtualSSRModuleId = "virtual:@pakframe/ssr";
   const resolvedVirtualSSRModuleId = "\0" + virtualSSRModuleId;
 
-  const virtualRouterModuleId = "virtual:@pakframe/router";
-  const resolvedVirtualRouterModuleId = "\0" + virtualRouterModuleId;
-
   return {
     name: "pakframe",
     enforce: "pre",
@@ -49,14 +42,14 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
         // optimizeDeps: {
         //   noDiscovery: true,
         //   include: [
-        //     // "pakframe",
-        //     // "pakframe/*",
+        //     "pakframe",
+        //     "pakframe/*",
         //     // "pakframe/ssr",
         //     // "pakframe/router",
         //     // "pakframe/meta",
         //     // "pakframe/jsx-runtime",
         //     // "pakframe/jsx-dev-runtime",
-        //     // "virtual:@pakframe/*"
+        //     "virtual:@pakframe/*"
         //   ],
         // },
         ssr: {
@@ -65,30 +58,26 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
             "pakframe/*",
             "@core",
             "@ssr",
-            "@router",
-            "@pakframe/*", 
-            /*"pakframe/ssr", "pakframe/router",*/
-            // "virtual:@pakframe/routes",
             // "virtual:@pakframe/*"
           ],
           external: [
             // "virtual:@pakframe/routes",
             // "virtual:@pakframe/router",
             // "@pakframe/fs-routes",
-          ]
+          ],
         },
         resolve: {
           alias: {
-            "@ssr": toAbsolute("ssr"),
+            //     "@ssr": toAbsolute("ssr"),
             "@core": toAbsolute("index"),
-            "@router": toAbsolute("router"),
-            // "@pakframe": toAbsolute("./index.js"),
-            // "@pakframe/*": toAbsolute("./"),
-            // "@pakframe/ssr": toAbsolute("./ssr.js"),
-            // "@pakframe/router": toAbsolute("../src/router/index.ts"),
-            "@pakframe/router": fileURLToPath(new URL("./router.js", import.meta.url)),
-            // "@pakframe/router": toAbsolute("./router"),
-            // "@pakframe/fs-routes": toAbsolute("./"),
+            //     "@router": toAbsolute("router"),
+            //     // "@pakframe": toAbsolute("./index.js"),
+            //     // "@pakframe/*": toAbsolute("./"),
+            //     // "@pakframe/ssr": toAbsolute("./ssr.js"),
+            //     // "@pakframe/router": toAbsolute("../src/router/index.ts"),
+            //     "@pakframe/router": fileURLToPath(new URL("./router.js", import.meta.url)),
+            //     // "@pakframe/router": toAbsolute("./router"),
+            //     // "@pakframe/fs-routes": toAbsolute("./"),
           },
         },
         esbuild: {
@@ -139,16 +128,10 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
       if (source === routesVirtualModuleId) {
         return resolvedRoutesVirtualModuleId;
       }
-      if (source === virtualRouterModuleId) {
-        return resolvedVirtualRouterModuleId;
-      }
       if (ssr && (source === "pakframe" || source === "@core")) {
         return resolvedVirtualSSRModuleId;
         // return "pakframe/ssr"
       }
-      // if (source === "pakframe/router") {
-      //   return virtualRouterModuleId;
-      // }
 
       return null;
     },
@@ -160,15 +143,6 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
           export * from 'pakframe/ssr';
         `;
       }
-      if (id === resolvedVirtualRouterModuleId) {
-        return `
-          export * from 'pakframe/router';
-        `;
-      }
-      // if (id === "@pakframe/router") {
-      //   // Dynamically load SSR content (replace with actual SSR logic)
-      //   return toAbsolute("./router.js");
-      // }
       // istanbul ignore else
       if (id === resolvedRoutesVirtualModuleId) {
         const currentRoutes = routeCache ||
@@ -180,28 +154,7 @@ function PackframePlugin(options?: PackframePluginOptions): PluginOption {
         }
         // console.log(toAbsolute("./index.js"))
         const routesScript = `
-// import { signal } from "pakframe/ssr";
-// console.log({ signal });
-// import * as ROUTER from "pakframe/router";
 import { Route, routes, lazy } from "pakframe/router";
-// const { Route, routes, lazy } = ROUTER;
-// import { Route } from "pakframe/router/Route";
-// import { routes } from "pakframe/router/routes";
-// import { lazy } from "pakframe/router/lazy";
-// import { Route, routes, lazy } from "@router";
-// import { Route, routes, lazy } from "virtual:@pakframe/router";
-// import { Route, routes, lazy } from "@pakframe/router";
-// import { Route, routes, lazy } from "${toAbsolute("./router.js")}";
-// import { Route } from "@pakframe/router/Route.js";
-// import { routes } from "@pakframe/router/routes.js";
-// import { lazy } from "@pakframe/router/lazy.js";
-console.log({ Route, routes, lazy })
-// console.log({ ROUTER })
-
-// Reset current routes
-// if (ROUTER.routes) {
-//   ROUTER.routes.length = 0;
-// }
 if (routes) {
   routes.length = 0;
 }

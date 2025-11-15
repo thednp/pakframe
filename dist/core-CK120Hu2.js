@@ -1,6 +1,5 @@
 import { getStringValue, isArray, isFunction, isNode, isObject, isPlainObject, isServer, isString, needsEncoding, store, urlAttributes } from "./store-JUSkKPgE.js";
 import { escape } from "@thednp/domparser";
-import "virtual:@pakframe/routes";
 
 //#region src/core/state.ts
 let context = [];
@@ -775,7 +774,8 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				if (document.head) hydrate(document.head, Head());
 				return kudos;
 			};
-			return add(wrapper, children$1());
+			add(wrapper, children$1());
+			return wrapper;
 		}
 		const csrRoute = memo(() => {
 			const p = routerState.pathname;
@@ -1011,4 +1011,4 @@ function Show({ when, children }) {
 
 //#endregion
 export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store$1 as store, style, styleToString, untrack, unwrap };
-//# sourceMappingURL=core-BoOqgK5l.js.map
+//# sourceMappingURL=core-CK120Hu2.js.map

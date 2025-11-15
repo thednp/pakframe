@@ -1,4 +1,4 @@
-import { h, effect } from "../core/index";
+import { effect, h } from "../core/index";
 import { isFunction, isServer } from "../util";
 import { setAttribute, style as setStyle } from "../core/index";
 import type {

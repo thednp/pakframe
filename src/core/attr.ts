@@ -13,7 +13,6 @@ import {
 } from "../util";
 import { escape } from "@thednp/domparser";
 
-
 /**
  * Sets or removes an attribute with the specified or inferred namespace on an element.
  * @param element - The DOM element to modify.
@@ -70,7 +69,7 @@ export const getStyleObject = <T extends CSSProperties>(styleObject: T) => {
   for (const [objKey, rawValue] of Object.entries(styleObject)) {
     key = objKey.split(/(?=[A-Z])/).join("-").toLowerCase() as keyof T;
     // allow state values in style object
-    value = (isFunction(rawValue) ? rawValue() : rawValue) as T[keyof T]
+    value = (isFunction(rawValue) ? rawValue() : rawValue) as T[keyof T];
     if (value) output[key] = value;
   }
   return output;
