@@ -44,20 +44,23 @@ export const hydrate = (
       return target;
     }
 
+    // Create tag type sets for fast lookup
+    const styleTagTypes = new Set(["style", "link"]);
+    
     // Handle non-style/link tags first
     const regularTags = (newChildren as DOMElement[]).filter((child) =>
-      !isTag(child, "style", "link")
+      !styleTagTypes.has(child.tagName.toLowerCase())
     );
 
     // Handle style/link tags separately
     const styleTags = (newChildren as DOMElement[]).filter((child) =>
-      isTag(child, "style", "link")
+      styleTagTypes.has(child.tagName.toLowerCase())
     );
 
     // Create maps for existing tags
     const existingStyles = new Map(
       (currentChildren as DOMElement[]).filter((child) =>
-        isTag(child, "style", "link")
+        styleTagTypes.has(child.tagName.toLowerCase())
       )
         .map((child) => [getTagKey(child), child]),
     );

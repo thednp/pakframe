@@ -1,5 +1,5 @@
 import { isFunction, isServer } from "./store-JUSkKPgE.js";
-import { effect, h, setAttribute, style } from "./core-DhPpeKuL.js";
+import { effect, h, setAttribute, style } from "./core-DXNZ-ZYS.js";
 
 //#region src/jsx/jsx.ts
 const jsx = (jsxTag, { children, ref, style: style$1,...rest }) => {
@@ -36,4 +36,4 @@ const Fragment = ({ children }) => children;
 
 //#endregion
 export { Fragment, jsx };
-//# sourceMappingURL=jsx-CWxSREd4.js.map
+//# sourceMappingURL=jsx-D-KdizA-.js.map

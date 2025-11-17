@@ -1,6 +1,5 @@
-const require_chunk = require('./chunk-CUT6urMc.cjs');
-const require_store = require('./store-DZCiBSN0.cjs');
-const __thednp_domparser = require_chunk.__toESM(require("@thednp/domparser"));
+import { getStringValue, isArray, isFunction, isNode, isObject, isPlainObject, isServer, isString, needsEncoding, store, urlAttributes } from "./store-JUSkKPgE.js";
+import { escape } from "@thednp/domparser";
 
 //#region src/core/state.ts
 let context = [];
@@ -29,14 +28,14 @@ function onMount(fn) {
 	});
 }
 function signal(value) {
-	value = require_store.isFunction(value) ? value() : value;
+	value = isFunction(value) ? value() : value;
 	const subscriptions = /* @__PURE__ */ new Set();
 	return [() => {
 		const running = context[context.length - 1];
 		if (running) subscribe(running, subscriptions);
 		return value;
 	}, (nextValue) => {
-		if (require_store.isFunction(nextValue)) value = nextValue(value);
+		if (isFunction(nextValue)) value = nextValue(value);
 		else value = nextValue;
 		const subs = Array.from(subscriptions);
 		for (const sub of subs) sub.execute();
@@ -83,7 +82,7 @@ function memo(value) {
 * @param value - The attribute value; falsy values remove the attribute.
 */
 const setAttribute = (element, key, rawValue) => {
-	const value = require_store.isFunction(rawValue) ? rawValue() : rawValue;
+	const value = isFunction(rawValue) ? rawValue() : rawValue;
 	const attrKey = key.indexOf(":") > -1 ? key.replace(/^[^:]+:/, "") : key;
 	const attrNamespaces = {
 		"xlink:": "http://www.w3.org/1999/xlink",
@@ -101,7 +100,7 @@ const setAttribute = (element, key, rawValue) => {
 		element.removeAttribute(key);
 	} else {
 		const t = typeof value;
-		const attrValue = value === true ? "" : t === "number" ? String(value) : !require_store.urlAttributes.includes(key) ? (0, __thednp_domparser.escape)(value) : require_store.needsEncoding(key, value) ? encodeURI(value) : value;
+		const attrValue = value === true ? "" : t === "number" ? String(value) : !urlAttributes.includes(key) ? escape(value) : needsEncoding(key, value) ? encodeURI(value) : value;
 		element.setAttributeNS(attrNS, attrKey, attrValue);
 	}
 };
@@ -111,7 +110,7 @@ const getStyleObject = (styleObject) => {
 	let value;
 	for (const [objKey, rawValue] of Object.entries(styleObject)) {
 		key = objKey.split(/(?=[A-Z])/).join("-").toLowerCase();
-		value = require_store.isFunction(rawValue) ? rawValue() : rawValue;
+		value = isFunction(rawValue) ? rawValue() : rawValue;
 		if (value) output[key] = value;
 	}
 	return output;
@@ -120,16 +119,16 @@ const getStyleObject = (styleObject) => {
 * Allows the "framework" to support CSS objects
 */
 const styleToString = (styleValue) => {
-	const styleVal = require_store.isFunction(styleValue) ? styleValue() : styleValue;
-	return typeof styleVal === "string" ? styleVal : require_store.isObject(styleVal) ? Object.entries(getStyleObject(styleVal)).reduce((acc, [key, value]) => acc + key + ":" + value + ";", "") : "";
+	const styleVal = isFunction(styleValue) ? styleValue() : styleValue;
+	return typeof styleVal === "string" ? styleVal : isObject(styleVal) ? Object.entries(getStyleObject(styleVal)).reduce((acc, [key, value]) => acc + key + ":" + value + ";", "") : "";
 };
 const style = (target, styleValue) => {
-	const styleVal = require_store.isFunction(styleValue) ? styleValue() : styleValue;
-	if (require_store.isObject(styleVal)) {
+	const styleVal = isFunction(styleValue) ? styleValue() : styleValue;
+	if (isObject(styleVal)) {
 		const styleObject = getStyleObject(styleVal);
 		if (Object.values(styleObject).filter((v) => v).length) Object.assign(target.style, styleObject);
 		else target.removeAttribute("style");
-	} else if (require_store.isString(styleVal) && styleVal.length) target.style.cssText = styleVal;
+	} else if (isString(styleVal) && styleVal.length) target.style.cssText = styleVal;
 	else target.removeAttribute("style");
 };
 
@@ -260,21 +259,21 @@ const namespaceElements = Object.entries(namespaceElementsMap).reduce((acc, [nam
 const add = (parent, child) => {
 	if (!parent || !child) return;
 	if (child instanceof Promise) child.then((resolved) => add(parent, resolved));
-	else if (require_store.isArray(child)) child.forEach((c) => add(parent, c));
-	else if (require_store.isNode(child)) parent.appendChild(child);
-	else if (require_store.isFunction(child)) {
+	else if (isArray(child)) child.forEach((c) => add(parent, c));
+	else if (isNode(child)) parent.appendChild(child);
+	else if (isFunction(child)) {
 		const textNode = document.createTextNode("");
 		parent.appendChild(textNode);
-		const realChild = require_store.isFunction(untrack(child)) ? untrack(child) : child;
+		const realChild = isFunction(untrack(child)) ? untrack(child) : child;
 		effect(() => {
 			const value = realChild();
-			if (require_store.isArray(value)) {
+			if (isArray(value)) {
 				parent.textContent = "";
 				value.forEach((v) => add(parent, v));
-			} else if (require_store.isNode(value)) add(parent, child);
-			else textNode.textContent = require_store.getStringValue(value);
+			} else if (isNode(value)) add(parent, child);
+			else textNode.textContent = getStringValue(value);
 		});
-	} else parent.appendChild(document.createTextNode(require_store.getStringValue(child)));
+	} else parent.appendChild(document.createTextNode(getStringValue(child)));
 };
 const createDomElement = (tagName) => {
 	const ns = namespaceElements[tagName];
@@ -285,7 +284,7 @@ function listen(target, event, handler, options) {
 }
 function h(tagName, first, ...children) {
 	const element = createDomElement(tagName);
-	if (require_store.isObject(first) && !require_store.isNode(first) && !require_store.isArray(first)) Object.entries(first).forEach(([key, value]) => {
+	if (isObject(first) && !isNode(first) && !isArray(first)) Object.entries(first).forEach(([key, value]) => {
 		if (key.startsWith("on")) {
 			if (typeof value !== "function") return;
 			const eventName = key.slice(2).toLowerCase();
@@ -312,12 +311,12 @@ const fixRouteUrl = (url) => {
 	if (url.startsWith("/")) return url;
 	return `/${url}`;
 };
-const initialPath = !require_store.isServer ? globalThis.location.pathname : "/";
-const initialSearch = !require_store.isServer ? globalThis.location.search : "";
+const initialPath = !isServer ? globalThis.location.pathname : "/";
+const initialSearch = !isServer ? globalThis.location.search : "";
 /**
 * The global router state.
 */
-const routerState = require_store.store({
+const routerState = store({
 	pathname: initialPath,
 	searchParams: new URLSearchParams(initialSearch),
 	params: {}
@@ -342,7 +341,7 @@ const isCurrentPage = (pageName) => {
 * Check if component is a lazy component
 */
 const isLazyComponent = (component) => {
-	if (require_store.isServer && typeof component === "function") return component.constructor.name.includes("AsyncFunction");
+	if (isServer && typeof component === "function") return component.constructor.name.includes("AsyncFunction");
 	return component?.isLazy === true;
 };
 /**
@@ -392,15 +391,15 @@ const cache = (key, value) => {
 * Registers a lazy component.
 */
 const lazy = (importFn) => {
-	if (require_store.isServer) return async () => {
+	if (isServer) return async () => {
 		const cached = getCached(importFn);
 		/* istanbul ignore next */
 		if (cached) return cached;
-		const module$1 = await importFn();
-		const component$1 = module$1?.default || module$1.Page;
+		const module = await importFn();
+		const component$1 = module?.default || module.Page;
 		const result = {
 			component: component$1,
-			route: module$1.route
+			route: module.route
 		};
 		cache(importFn, result);
 		return result;
@@ -418,14 +417,14 @@ const lazy = (importFn) => {
 			return;
 		}
 		initialized = true;
-		importFn().then((module$1) => {
-			const pageComponent = module$1?.default || module$1.Page;
+		importFn().then((module) => {
+			const pageComponent = module?.default || module.Page;
 			cache(importFn, {
 				component: pageComponent,
-				route: module$1.route
+				route: module.route
 			});
 			setComponent(pageComponent);
-			setRoute(module$1.route);
+			setRoute(module.route);
 		});
 	};
 	const lazyComponent = () => {
@@ -523,7 +522,7 @@ const matchRoute = (initialPath$1) => {
 const navigate = (path, options = { replace: false }) => {
 	const { replace = false } = options;
 	// istanbul ignore else
-	if (!require_store.isServer) {
+	if (!isServer) {
 		const url = new URL(path, globalThis.location.origin);
 		const route = matchRoute(url.pathname);
 		if (replace) globalThis.history.replaceState({}, "", path);
@@ -549,8 +548,8 @@ const A = ({ href, children,...rest } = {}, ...otherChildren) => {
 			// istanbul ignore else
 			if (typeof props.onclick === "function") props.onclick(e);
 			const route = matchRoute(HREF);
-			const module$1 = await route.component();
-			await executeLifecycle(module$1, route.params);
+			const module = await route.component();
+			await executeLifecycle(module, route.params);
 			navigate(HREF);
 		},
 		onmouseenter: () => {
@@ -575,7 +574,7 @@ const A = ({ href, children,...rest } = {}, ...otherChildren) => {
 */
 const unwrap = (source, ...children) => {
 	const layout = () => {
-		const pageChildren = source && typeof source === "object" && "children" in source && require_store.isArray(source?.children) ? source.children : require_store.isFunction(source) ? [...source().children || source()] : typeof HTMLElement !== "undefined" && source instanceof HTMLElement ? [...source.children] : require_store.isArray(source) ? source : [source];
+		const pageChildren = source && typeof source === "object" && "children" in source && isArray(source?.children) ? source.children : isFunction(source) ? [...source().children || source()] : typeof HTMLElement !== "undefined" && source instanceof HTMLElement ? [...source.children] : isArray(source) ? source : [source];
 		return { children: [...children || [], ...pageChildren] };
 	};
 	return layout();
@@ -628,7 +627,7 @@ const createHeadTags = () => /* @__PURE__ */ new Map();
 * on the server and the client.
 */
 const getHeadTags = (() => {
-	if (require_store.isServer) {
+	if (isServer) {
 		let serverHeadTags;
 		return () => {
 			if (!serverHeadTags) serverHeadTags = createHeadTags();
@@ -651,7 +650,7 @@ const resetHeadTags = () => {
 const initializeHeadTags = () => {
 	const tags = getHeadTags();
 	/* istanbul ignore else */
-	if (!tags.size && !require_store.isServer) Array.from(document.head.children).forEach((tag) => {
+	if (!tags.size && !isServer) Array.from(document.head.children).forEach((tag) => {
 		tags.set(getTagKey(tag), tag);
 	});
 };
@@ -728,13 +727,13 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			return wrapper;
 		}
 		routerState.params = route.params || {};
-		if (require_store.isServer) {
+		if (isServer) {
 			const renderComponent = async () => {
 				try {
-					const module$1 = await route.component();
-					const component$1 = typeof module$1.component === "function" ? module$1.component() : module$1.component;
-					await executeLifecycle(module$1, route.params);
-					add(wrapper, unwrap(component$1).children);
+					const module = await route.component();
+					const component = typeof module.component === "function" ? module.component() : module.component;
+					await executeLifecycle(module, route.params);
+					add(wrapper, unwrap(component).children);
 					return wrapper;
 				} catch (error) {
 					/* istanbul ignore next */
@@ -763,10 +762,10 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 		}
 		if (root) {
 			const children$1 = async () => {
-				const module$1 = await route.component();
-				executeLifecycle(module$1, route.params);
+				const module = await route.component();
+				executeLifecycle(module, route.params);
 				// istanbul ignore next - cannot test
-				const cp = Array.isArray(module$1) || module$1 instanceof Element ? module$1 : typeof module$1.component === "function" ? module$1.component() : module$1.component;
+				const cp = Array.isArray(module) || module instanceof Element ? module : typeof module.component === "function" ? module.component() : module.component;
 				// istanbul ignore next - cannot test
 				const kids = () => cp ? Array.from(unwrap(cp).children) : [];
 				const kudos = kids();
@@ -792,21 +791,16 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const cp = Array.isArray(md) || md instanceof Element ? md : typeof md.component === "function" ? md.component() : md.component;
 			return cp ? Array.from(unwrap(cp).children) : [];
 		});
-		const component = () => {
+		let hydrated = false;
+		effect(() => {
 			const kids = children();
-			const result = () => {
-				return () => {
-					hydrate(wrapper, kids);
-					isConnected = true;
-					// istanbul ignore else
-					if (document.head) hydrate(document.head, Head());
-					return wrapper;
-				};
-			};
-			return result();
-		};
-		const finalResult = component();
-		if (finalResult) add(wrapper, finalResult);
+			console.log({ kids });
+			hydrate(wrapper, kids);
+			isConnected = true;
+			// istanbul ignore else
+			if (document.head) hydrate(document.head, Head());
+		});
+		add(wrapper, children());
 		return wrapper;
 	};
 	return mainLayout();
@@ -842,9 +836,10 @@ const hydrate = (target, content) => {
 			target.setAttribute("data-h", "");
 			return target;
 		}
-		const regularTags = newChildren.filter((child) => !isTag(child, "style", "link"));
-		const styleTags = newChildren.filter((child) => isTag(child, "style", "link"));
-		const existingStyles = new Map(currentChildren.filter((child) => isTag(child, "style", "link")).map((child) => [getTagKey(child), child]));
+		const styleTagTypes = new Set(["style", "link"]);
+		const regularTags = newChildren.filter((child) => !styleTagTypes.has(child.tagName.toLowerCase()));
+		const styleTags = newChildren.filter((child) => styleTagTypes.has(child.tagName.toLowerCase()));
+		const existingStyles = new Map(currentChildren.filter((child) => styleTagTypes.has(child.tagName.toLowerCase())).map((child) => [getTagKey(child), child]));
 		regularTags.forEach((newChild) => {
 			const key = getTagKey(newChild);
 			const existing = currentChildren.find((child) => getTagKey(child) === key);
@@ -898,8 +893,8 @@ const hydrate = (target, content) => {
 //#endregion
 //#region src/core/store.ts
 function processArrayItem(item) {
-	if (!require_store.isPlainObject(item) || item && item["_"]) return item;
-	if (require_store.isPlainObject(item)) {
+	if (!isPlainObject(item) || item && item["_"]) return item;
+	if (isPlainObject(item)) {
 		const newObj = {};
 		createState(item, newObj);
 		Object.defineProperty(newObj, "_", {
@@ -914,7 +909,7 @@ function createArrayProxy(get, set) {
 	return new Proxy([], { get(_, prop) {
 		const arr = get();
 		const typedProp = prop;
-		if (require_store.isFunction(Array.prototype[typedProp])) return (...args) => {
+		if (isFunction(Array.prototype[typedProp])) return (...args) => {
 			const result = Array.prototype[typedProp].apply(arr, args);
 			if ([
 				"push",
@@ -933,7 +928,7 @@ function reconcileArrays(current, next) {
 	return next.some((item, i) => item !== current[i]) ? next.map(processArrayItem) : current;
 }
 function createState(obj, parentReceiver) {
-	for (const [key, value] of Object.entries(obj)) if (require_store.isArray(value)) {
+	for (const [key, value] of Object.entries(obj)) if (isArray(value)) {
 		const [get, set] = signal(value.map(processArrayItem));
 		const proxy = createArrayProxy(get, set);
 		Object.defineProperty(parentReceiver, key, {
@@ -945,7 +940,7 @@ function createState(obj, parentReceiver) {
 			},
 			enumerable: true
 		});
-	} else if (require_store.isPlainObject(value)) parentReceiver[key] = createState(value, {});
+	} else if (isPlainObject(value)) parentReceiver[key] = createState(value, {});
 	else {
 		const [get, set] = signal(value);
 		Object.defineProperty(parentReceiver, key, {
@@ -990,16 +985,16 @@ const List = (props) => {
 	});
 	queueMicrotask(() => {
 		parentElement = placeholder.parentElement;
-		if (require_store.isFunction(each)) updateItems(untrack(each));
+		if (isFunction(each)) updateItems(untrack(each));
 	});
 	return placeholder;
 };
 function Show({ when, children }) {
 	const placeholder = document.createTextNode("");
-	const initialWhen = () => require_store.isFunction(when) ? when() : when;
+	const initialWhen = () => isFunction(when) ? when() : when;
 	const newNodes = () => {
-		const nodes = require_store.isFunction(children) ? children() : children;
-		return require_store.isArray(nodes) ? nodes : [nodes];
+		const nodes = isFunction(children) ? children() : children;
+		return isArray(nodes) ? nodes : [nodes];
 	};
 	effect(() => {
 		const condition = initialWhen();
@@ -1012,268 +1007,5 @@ function Show({ when, children }) {
 }
 
 //#endregion
-Object.defineProperty(exports, 'A', {
-  enumerable: true,
-  get: function () {
-    return A;
-  }
-});
-Object.defineProperty(exports, 'Head', {
-  enumerable: true,
-  get: function () {
-    return Head;
-  }
-});
-Object.defineProperty(exports, 'Link', {
-  enumerable: true,
-  get: function () {
-    return Link;
-  }
-});
-Object.defineProperty(exports, 'List', {
-  enumerable: true,
-  get: function () {
-    return List;
-  }
-});
-Object.defineProperty(exports, 'Meta', {
-  enumerable: true,
-  get: function () {
-    return Meta;
-  }
-});
-Object.defineProperty(exports, 'Route', {
-  enumerable: true,
-  get: function () {
-    return Route;
-  }
-});
-Object.defineProperty(exports, 'Router', {
-  enumerable: true,
-  get: function () {
-    return Router;
-  }
-});
-Object.defineProperty(exports, 'Script', {
-  enumerable: true,
-  get: function () {
-    return Script;
-  }
-});
-Object.defineProperty(exports, 'Show', {
-  enumerable: true,
-  get: function () {
-    return Show;
-  }
-});
-Object.defineProperty(exports, 'Style', {
-  enumerable: true,
-  get: function () {
-    return Style;
-  }
-});
-Object.defineProperty(exports, 'Title', {
-  enumerable: true,
-  get: function () {
-    return Title;
-  }
-});
-Object.defineProperty(exports, 'add', {
-  enumerable: true,
-  get: function () {
-    return add;
-  }
-});
-Object.defineProperty(exports, 'addMeta', {
-  enumerable: true,
-  get: function () {
-    return addMeta;
-  }
-});
-Object.defineProperty(exports, 'cache', {
-  enumerable: true,
-  get: function () {
-    return cache;
-  }
-});
-Object.defineProperty(exports, 'createDomElement', {
-  enumerable: true,
-  get: function () {
-    return createDomElement;
-  }
-});
-Object.defineProperty(exports, 'effect', {
-  enumerable: true,
-  get: function () {
-    return effect;
-  }
-});
-Object.defineProperty(exports, 'executeLifecycle', {
-  enumerable: true,
-  get: function () {
-    return executeLifecycle;
-  }
-});
-Object.defineProperty(exports, 'extractParams', {
-  enumerable: true,
-  get: function () {
-    return extractParams;
-  }
-});
-Object.defineProperty(exports, 'fixRouteUrl', {
-  enumerable: true,
-  get: function () {
-    return fixRouteUrl;
-  }
-});
-Object.defineProperty(exports, 'getCached', {
-  enumerable: true,
-  get: function () {
-    return getCached;
-  }
-});
-Object.defineProperty(exports, 'getStyleObject', {
-  enumerable: true,
-  get: function () {
-    return getStyleObject;
-  }
-});
-Object.defineProperty(exports, 'getTagKey', {
-  enumerable: true,
-  get: function () {
-    return getTagKey;
-  }
-});
-Object.defineProperty(exports, 'h', {
-  enumerable: true,
-  get: function () {
-    return h;
-  }
-});
-Object.defineProperty(exports, 'hydrate', {
-  enumerable: true,
-  get: function () {
-    return hydrate;
-  }
-});
-Object.defineProperty(exports, 'initializeHeadTags', {
-  enumerable: true,
-  get: function () {
-    return initializeHeadTags;
-  }
-});
-Object.defineProperty(exports, 'isCurrentPage', {
-  enumerable: true,
-  get: function () {
-    return isCurrentPage;
-  }
-});
-Object.defineProperty(exports, 'isLazyComponent', {
-  enumerable: true,
-  get: function () {
-    return isLazyComponent;
-  }
-});
-Object.defineProperty(exports, 'lazy', {
-  enumerable: true,
-  get: function () {
-    return lazy;
-  }
-});
-Object.defineProperty(exports, 'listen', {
-  enumerable: true,
-  get: function () {
-    return listen;
-  }
-});
-Object.defineProperty(exports, 'memo', {
-  enumerable: true,
-  get: function () {
-    return memo;
-  }
-});
-Object.defineProperty(exports, 'navigate', {
-  enumerable: true,
-  get: function () {
-    return navigate;
-  }
-});
-Object.defineProperty(exports, 'onMount', {
-  enumerable: true,
-  get: function () {
-    return onMount;
-  }
-});
-Object.defineProperty(exports, 'parseAttributes', {
-  enumerable: true,
-  get: function () {
-    return parseAttributes;
-  }
-});
-Object.defineProperty(exports, 'resetHeadTags', {
-  enumerable: true,
-  get: function () {
-    return resetHeadTags;
-  }
-});
-Object.defineProperty(exports, 'routerState', {
-  enumerable: true,
-  get: function () {
-    return routerState;
-  }
-});
-Object.defineProperty(exports, 'routes', {
-  enumerable: true,
-  get: function () {
-    return routes;
-  }
-});
-Object.defineProperty(exports, 'setAttribute', {
-  enumerable: true,
-  get: function () {
-    return setAttribute;
-  }
-});
-Object.defineProperty(exports, 'setRouterState', {
-  enumerable: true,
-  get: function () {
-    return setRouterState;
-  }
-});
-Object.defineProperty(exports, 'signal', {
-  enumerable: true,
-  get: function () {
-    return signal;
-  }
-});
-Object.defineProperty(exports, 'store', {
-  enumerable: true,
-  get: function () {
-    return store$1;
-  }
-});
-Object.defineProperty(exports, 'style', {
-  enumerable: true,
-  get: function () {
-    return style;
-  }
-});
-Object.defineProperty(exports, 'styleToString', {
-  enumerable: true,
-  get: function () {
-    return styleToString;
-  }
-});
-Object.defineProperty(exports, 'untrack', {
-  enumerable: true,
-  get: function () {
-    return untrack;
-  }
-});
-Object.defineProperty(exports, 'unwrap', {
-  enumerable: true,
-  get: function () {
-    return unwrap;
-  }
-});
-//# sourceMappingURL=core-Ew6WhCln.cjs.map
+export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store$1 as store, style, styleToString, untrack, unwrap };
+//# sourceMappingURL=core-DXNZ-ZYS.js.map

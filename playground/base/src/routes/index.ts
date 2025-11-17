@@ -5,7 +5,8 @@ import { effect, h, signal, type MaybeChildNode } from "pakframe";
 
 
 export const route = {
-    load: () => console.log('load triggered')
+    preload: () => console.log('preload triggered'),
+    load: () => console.log('load triggered'),
 }
 
 export function Page() {

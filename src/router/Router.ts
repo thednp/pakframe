@@ -123,24 +123,49 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
         : /* istanbul ignore next */ [];
     });
 
-    const component = () => {
-      const kids = children();
-      const result = () => {
-        return (() => {
 
-          hydrate(wrapper, kids);
-          isConnected = true;
-          // istanbul ignore else
-          if (document.head) {
-            hydrate(document.head,  Head());
-          }
-          return wrapper;
-        });
-      };
-      return result();
-    };
-    const finalResult = component();
-    if (finalResult) add(wrapper, finalResult);
+    // Mark hydration done to prevent recursive calls
+    let hydrated = false;
+
+    // const component = memo<Element>(() => {
+    //   const kids = children();
+    //   const result = () => {
+
+    //       hydrate(wrapper, kids);
+    //       isConnected = true;
+    //       // istanbul ignore else
+    //       if (document.head) {
+    //         hydrate(document.head,  Head());
+    //       }
+    //       // return wrapper;
+    //       return kids;
+    //     };
+    //   return result();
+    // });
+
+    // const finalResult = component();
+    // console.log({finalResult})
+
+    effect(() => {
+      const kids = children();
+      console.log({kids})
+
+      // const result = () => {
+
+        hydrate(wrapper, kids);
+        isConnected = true;
+        // istanbul ignore else
+        if (document.head) {
+          hydrate(document.head,  Head());
+        }
+        // return wrapper;
+        // return kids;
+      // };
+      // result();
+    })
+
+    // if (finalResult) add(wrapper, finalResult);
+    add(wrapper, children());
 
     return wrapper;
   };
