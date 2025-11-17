@@ -1,4 +1,4 @@
-import { Accessor, CSSProperties, DOMElement, DOMNodeAttributes, FunctionMaybe, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, PropValueOrAccessor, Setter, StoreObject, TagNames } from "./types-CjexJQM1.cjs";
+import { Accessor, CSSProperties, DOMElement, DOMNodeAttributes, FunctionMaybe, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, PropValueOrAccessor, Setter, StoreObject, TagNames } from "./types-pzt1ZtaD.js";
 
 //#region src/ssr/h.d.ts
 declare const add: (parent: DOMElement, child?: FunctionMaybe<RegExp | Date> | Accessor<MaybeChildNode> | MaybeChildNode | Promise<MaybeChildNode>) => void;
@@ -53,4 +53,4 @@ declare function Show<T>({
 declare function renderPreloadLinks(modules: string[], manifest: Record<string, string[]>): string;
 //#endregion
 export { List, ListProps, Show, add, effect, getStyleObject, h, listen, memo, onMount, renderPreloadLinks, setAttribute, setHydrationKey, signal, store, style, styleToString, untrack };
-//# sourceMappingURL=index-C9bTdxkl.d.cts.map
+//# sourceMappingURL=index-Ce6baPnh.d.ts.map

@@ -9,7 +9,6 @@ import { unwrap } from "./unwrap";
 import { hydrate } from "../core/hydrate";
 import { Head, initializeHeadTags } from "../meta";
 
-
 let isConnected = false;
 
 export const Router = (initialProps = /* istanbul ignore next */ {}) => {
@@ -123,46 +122,27 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
         : /* istanbul ignore next */ [];
     });
 
-
     // Mark hydration done to prevent recursive calls
     let hydrated = false;
 
-    // const component = memo<Element>(() => {
-    //   const kids = children();
-    //   const result = () => {
-
-    //       hydrate(wrapper, kids);
-    //       isConnected = true;
-    //       // istanbul ignore else
-    //       if (document.head) {
-    //         hydrate(document.head,  Head());
-    //       }
-    //       // return wrapper;
-    //       return kids;
-    //     };
-    //   return result();
-    // });
-
-    // const finalResult = component();
-    // console.log({finalResult})
-
-    effect(() => {
+    const component = memo<Element>(() => {
       const kids = children();
-      console.log({kids})
+      const result = () => {
 
-      // const result = () => {
+          hydrate(wrapper, kids);
+          isConnected = true;
+          // istanbul ignore else
+          if (document.head) {
+            hydrate(document.head,  Head());
+          }
+          // return wrapper;
+          return kids;
+        };
+      return result();
+    });
 
-        hydrate(wrapper, kids);
-        isConnected = true;
-        // istanbul ignore else
-        if (document.head) {
-          hydrate(document.head,  Head());
-        }
-        // return wrapper;
-        // return kids;
-      // };
-      // result();
-    })
+    const finalResult = component();
+    console.log({finalResult})
 
     // if (finalResult) add(wrapper, finalResult);
     add(wrapper, children());

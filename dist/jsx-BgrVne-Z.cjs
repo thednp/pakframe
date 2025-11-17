@@ -1,5 +1,5 @@
 const require_store = require('./store-DZCiBSN0.cjs');
-const require_core = require('./core-myM5aBvi.cjs');
+const require_core = require('./core-K7dOOoMr.cjs');
 
 //#region src/jsx/jsx.ts
 const jsx = (jsxTag, { children, ref, style: style$1,...rest }) => {
@@ -47,4 +47,4 @@ Object.defineProperty(exports, 'jsx', {
     return jsx;
   }
 });
-//# sourceMappingURL=jsx-DWBr1M9Z.cjs.map
+//# sourceMappingURL=jsx-BgrVne-Z.cjs.map

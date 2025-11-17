@@ -732,9 +732,9 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const renderComponent = async () => {
 				try {
 					const module$1 = await route.component();
-					const component = typeof module$1.component === "function" ? module$1.component() : module$1.component;
+					const component$1 = typeof module$1.component === "function" ? module$1.component() : module$1.component;
 					await executeLifecycle(module$1, route.params);
-					add(wrapper, unwrap(component).children);
+					add(wrapper, unwrap(component$1).children);
 					return wrapper;
 				} catch (error) {
 					/* istanbul ignore next */
@@ -793,14 +793,19 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			return cp ? Array.from(unwrap(cp).children) : [];
 		});
 		let hydrated = false;
-		effect(() => {
+		const component = memo(() => {
 			const kids = children();
-			console.log({ kids });
-			hydrate(wrapper, kids);
-			isConnected = true;
-			// istanbul ignore else
-			if (document.head) hydrate(document.head, Head());
+			const result = () => {
+				hydrate(wrapper, kids);
+				isConnected = true;
+				// istanbul ignore else
+				if (document.head) hydrate(document.head, Head());
+				return kids;
+			};
+			return result();
 		});
+		const finalResult = component();
+		console.log({ finalResult });
 		add(wrapper, children());
 		return wrapper;
 	};
@@ -1272,4 +1277,4 @@ Object.defineProperty(exports, 'unwrap', {
     return unwrap;
   }
 });
-//# sourceMappingURL=core-myM5aBvi.cjs.map
+//# sourceMappingURL=core-K7dOOoMr.cjs.map

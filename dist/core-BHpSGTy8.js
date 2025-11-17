@@ -731,9 +731,9 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const renderComponent = async () => {
 				try {
 					const module = await route.component();
-					const component = typeof module.component === "function" ? module.component() : module.component;
+					const component$1 = typeof module.component === "function" ? module.component() : module.component;
 					await executeLifecycle(module, route.params);
-					add(wrapper, unwrap(component).children);
+					add(wrapper, unwrap(component$1).children);
 					return wrapper;
 				} catch (error) {
 					/* istanbul ignore next */
@@ -792,14 +792,19 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			return cp ? Array.from(unwrap(cp).children) : [];
 		});
 		let hydrated = false;
-		effect(() => {
+		const component = memo(() => {
 			const kids = children();
-			console.log({ kids });
-			hydrate(wrapper, kids);
-			isConnected = true;
-			// istanbul ignore else
-			if (document.head) hydrate(document.head, Head());
+			const result = () => {
+				hydrate(wrapper, kids);
+				isConnected = true;
+				// istanbul ignore else
+				if (document.head) hydrate(document.head, Head());
+				return kids;
+			};
+			return result();
 		});
+		const finalResult = component();
+		console.log({ finalResult });
 		add(wrapper, children());
 		return wrapper;
 	};
@@ -1008,4 +1013,4 @@ function Show({ when, children }) {
 
 //#endregion
 export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store$1 as store, style, styleToString, untrack, unwrap };
-//# sourceMappingURL=core-DXNZ-ZYS.js.map
+//# sourceMappingURL=core-BHpSGTy8.js.map
