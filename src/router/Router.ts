@@ -144,8 +144,8 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
     const finalResult = component();
     console.log({finalResult})
 
-    // if (finalResult) add(wrapper, finalResult);
-    add(wrapper, children());
+    if (finalResult) add(wrapper, finalResult);
+    // add(wrapper, children());
 
     return wrapper;
   };

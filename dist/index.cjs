@@ -1,6 +1,6 @@
 require("virtual:@pakframe/routes");
 require('./store-DZCiBSN0.cjs');
-const require_core = require('./core-K7dOOoMr.cjs');
+const require_core = require('./core-CHT9vlTa.cjs');
 
 exports.List = require_core.List;
 exports.Show = require_core.Show;

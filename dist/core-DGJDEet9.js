@@ -805,7 +805,7 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 		});
 		const finalResult = component();
 		console.log({ finalResult });
-		add(wrapper, children());
+		if (finalResult) add(wrapper, finalResult);
 		return wrapper;
 	};
 	return mainLayout();
@@ -1013,4 +1013,4 @@ function Show({ when, children }) {
 
 //#endregion
 export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store$1 as store, style, styleToString, untrack, unwrap };
-//# sourceMappingURL=core-BHpSGTy8.js.map
+//# sourceMappingURL=core-DGJDEet9.js.map

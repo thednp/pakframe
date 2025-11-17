@@ -806,7 +806,7 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 		});
 		const finalResult = component();
 		console.log({ finalResult });
-		add(wrapper, children());
+		if (finalResult) add(wrapper, finalResult);
 		return wrapper;
 	};
 	return mainLayout();
@@ -1277,4 +1277,4 @@ Object.defineProperty(exports, 'unwrap', {
     return unwrap;
   }
 });
-//# sourceMappingURL=core-K7dOOoMr.cjs.map
+//# sourceMappingURL=core-CHT9vlTa.cjs.map
