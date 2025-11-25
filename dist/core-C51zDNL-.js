@@ -731,9 +731,9 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const renderComponent = async () => {
 				try {
 					const module = await route.component();
-					const component$1 = typeof module.component === "function" ? module.component() : module.component;
+					const component = typeof module.component === "function" ? module.component() : module.component;
 					await executeLifecycle(module, route.params);
-					add(wrapper, unwrap(component$1).children);
+					add(wrapper, unwrap(component).children);
 					return wrapper;
 				} catch (error) {
 					/* istanbul ignore next */
@@ -761,8 +761,8 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			);
 		}
 		if (root) {
-			const children$1 = async () => {
-				const module = await route.component();
+			const children$1 = () => {
+				const module = route.component();
 				executeLifecycle(module, route.params);
 				// istanbul ignore next - cannot test
 				const cp = Array.isArray(module) || module instanceof Element ? module : typeof module.component === "function" ? module.component() : module.component;
@@ -774,6 +774,10 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				if (document.head) hydrate(document.head, Head());
 				return kudos;
 			};
+			console.log("Router", {
+				root,
+				children: children$1
+			});
 			add(wrapper, children$1());
 			return wrapper;
 		}
@@ -781,7 +785,7 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const p = routerState.pathname;
 			return matchRoute(p);
 		});
-		const children = memo(() => {
+		const children = () => {
 			const route$1 = csrRoute();
 			// istanbul ignore if - can only be tested in client
 			if (!route$1) return [h("div", "No Route Found")];
@@ -790,22 +794,20 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			// istanbul ignore next - cannot test all cases
 			const cp = Array.isArray(md) || md instanceof Element ? md : typeof md.component === "function" ? md.component() : md.component;
 			return cp ? Array.from(unwrap(cp).children) : [];
+		};
+		add(wrapper, () => {
+			const kudos = children();
+			console.log({
+				wrapper,
+				kudos,
+				isConnected
+			});
+			isConnected = true;
+			// istanbul ignore else
+			if (document.head) hydrate(document.head, Head());
+			hydrate(wrapper, kudos);
+			return kudos;
 		});
-		let hydrated = false;
-		const component = memo(() => {
-			const kids = children();
-			const result = () => {
-				hydrate(wrapper, kids);
-				isConnected = true;
-				// istanbul ignore else
-				if (document.head) hydrate(document.head, Head());
-				return kids;
-			};
-			return result();
-		});
-		const finalResult = component();
-		console.log({ finalResult });
-		if (finalResult) add(wrapper, finalResult);
 		return wrapper;
 	};
 	return mainLayout();
@@ -828,6 +830,21 @@ const hydrate = (target, content) => {
 			if (!target.hasAttribute("data-h")) hydrate(target, res);
 			else {
 				const wrapper$1 = unwrap(res);
+				target.replaceChildren(...Array.from(wrapper$1.children));
+			}
+		});
+		return target;
+	}
+	if (isFunction(content)) {
+		effect(() => {
+			const resolvedContent = content();
+			console.log({
+				isFunction: isFunction(content),
+				resolvedContent
+			});
+			if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+			else {
+				const wrapper$1 = unwrap(resolvedContent);
 				target.replaceChildren(...Array.from(wrapper$1.children));
 			}
 		});
@@ -1013,4 +1030,4 @@ function Show({ when, children }) {
 
 //#endregion
 export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store$1 as store, style, styleToString, untrack, unwrap };
-//# sourceMappingURL=core-DGJDEet9.js.map
+//# sourceMappingURL=core-C51zDNL-.js.map

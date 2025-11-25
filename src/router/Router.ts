@@ -1,5 +1,4 @@
-// import { add, effect, h, memo } from "../core/index";
-import { add, effect, h, memo } from "@core";
+import { add, h, memo } from "@core";
 import type { DOMElement, MaybeChildNode } from "../types/types";
 import { isServer } from "../util";
 import { routerState, setRouterState } from "./state";
@@ -12,8 +11,6 @@ import { Head, initializeHeadTags } from "../meta";
 let isConnected = false;
 
 export const Router = (initialProps = /* istanbul ignore next */ {}) => {
-  // const { div, main } = van.tags;
-
   /* istanbul ignore next - try again later */
   const props = Object.fromEntries(
     Object.entries(initialProps).filter(([_, val]) => val !== undefined),
@@ -74,8 +71,8 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
     // or when A component has been clicked in the client
     if (root) {
       // this case is when root is server side rendered
-      const children = async () => {
-        const module = await route.component();
+      const children = () => {
+        const module = route.component();
         executeLifecycle(module, route.params);
         // istanbul ignore next - cannot test
         const cp = (Array.isArray(module) || module instanceof Element)
@@ -96,7 +93,10 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
         return kudos;
       };
 
-      add(wrapper, children() as Promise<MaybeChildNode>);
+      console.log("Router", { root, children })
+
+      // add(wrapper, children as Promise<MaybeChildNode[]>);
+      add(wrapper, children() as MaybeChildNode[]);
       return wrapper;
     }
     // this case is when root is for SPA apps
@@ -105,7 +105,7 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
       return matchRoute(p);
     });
 
-    const children = memo(() => {
+    const children = () => {
       const route = csrRoute();
       // istanbul ignore if - can only be tested in client
       if (!route) return [h("div", "No Route Found")];
@@ -120,32 +120,42 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
       return cp
         ? Array.from(unwrap(cp).children)
         : /* istanbul ignore next */ [];
+    };
+
+    // const component = () => {
+    //   const kids = () => children();
+    //   const result = () => {
+    //     return effect(() => {
+    //       const kudos = kids();
+    //       isConnected = true;
+    //       // istanbul ignore else
+    //       if (document.head) {
+    //         hydrate(document.head, Head());
+    //       }
+    //       return hydrate(wrapper, kudos);
+    //     });
+    //   };
+    //   return result();
+    // };
+    // const finalResult = component();
+
+    // console.log({root, finalResult })
+
+    // return finalResult
+    //   ? /* istanbul ignore next*/ add(wrapper, finalResult())
+    //   : wrapper;
+
+    add(wrapper, () => {
+      const kudos = children();
+      console.log({ wrapper, kudos, isConnected })
+      isConnected = true;
+      // istanbul ignore else
+      if (document.head) {
+        hydrate(document.head, Head());
+      }
+      hydrate(wrapper, kudos);
+      return kudos;
     });
-
-    // Mark hydration done to prevent recursive calls
-    let hydrated = false;
-
-    const component = memo<Element>(() => {
-      const kids = children();
-      const result = () => {
-
-          hydrate(wrapper, kids);
-          isConnected = true;
-          // istanbul ignore else
-          if (document.head) {
-            hydrate(document.head,  Head());
-          }
-          // return wrapper;
-          return kids;
-        };
-      return result();
-    });
-
-    const finalResult = component();
-    console.log({finalResult})
-
-    if (finalResult) add(wrapper, finalResult);
-    // add(wrapper, children());
 
     return wrapper;
   };

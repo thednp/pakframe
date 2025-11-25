@@ -732,9 +732,9 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const renderComponent = async () => {
 				try {
 					const module$1 = await route.component();
-					const component$1 = typeof module$1.component === "function" ? module$1.component() : module$1.component;
+					const component = typeof module$1.component === "function" ? module$1.component() : module$1.component;
 					await executeLifecycle(module$1, route.params);
-					add(wrapper, unwrap(component$1).children);
+					add(wrapper, unwrap(component).children);
 					return wrapper;
 				} catch (error) {
 					/* istanbul ignore next */
@@ -762,8 +762,8 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			);
 		}
 		if (root) {
-			const children$1 = async () => {
-				const module$1 = await route.component();
+			const children$1 = () => {
+				const module$1 = route.component();
 				executeLifecycle(module$1, route.params);
 				// istanbul ignore next - cannot test
 				const cp = Array.isArray(module$1) || module$1 instanceof Element ? module$1 : typeof module$1.component === "function" ? module$1.component() : module$1.component;
@@ -775,6 +775,10 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				if (document.head) hydrate(document.head, Head());
 				return kudos;
 			};
+			console.log("Router", {
+				root,
+				children: children$1
+			});
 			add(wrapper, children$1());
 			return wrapper;
 		}
@@ -782,7 +786,7 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const p = routerState.pathname;
 			return matchRoute(p);
 		});
-		const children = memo(() => {
+		const children = () => {
 			const route$1 = csrRoute();
 			// istanbul ignore if - can only be tested in client
 			if (!route$1) return [h("div", "No Route Found")];
@@ -791,22 +795,20 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			// istanbul ignore next - cannot test all cases
 			const cp = Array.isArray(md) || md instanceof Element ? md : typeof md.component === "function" ? md.component() : md.component;
 			return cp ? Array.from(unwrap(cp).children) : [];
+		};
+		add(wrapper, () => {
+			const kudos = children();
+			console.log({
+				wrapper,
+				kudos,
+				isConnected
+			});
+			isConnected = true;
+			// istanbul ignore else
+			if (document.head) hydrate(document.head, Head());
+			hydrate(wrapper, kudos);
+			return kudos;
 		});
-		let hydrated = false;
-		const component = memo(() => {
-			const kids = children();
-			const result = () => {
-				hydrate(wrapper, kids);
-				isConnected = true;
-				// istanbul ignore else
-				if (document.head) hydrate(document.head, Head());
-				return kids;
-			};
-			return result();
-		});
-		const finalResult = component();
-		console.log({ finalResult });
-		if (finalResult) add(wrapper, finalResult);
 		return wrapper;
 	};
 	return mainLayout();
@@ -829,6 +831,21 @@ const hydrate = (target, content) => {
 			if (!target.hasAttribute("data-h")) hydrate(target, res);
 			else {
 				const wrapper$1 = unwrap(res);
+				target.replaceChildren(...Array.from(wrapper$1.children));
+			}
+		});
+		return target;
+	}
+	if (require_store.isFunction(content)) {
+		effect(() => {
+			const resolvedContent = content();
+			console.log({
+				isFunction: require_store.isFunction(content),
+				resolvedContent
+			});
+			if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+			else {
+				const wrapper$1 = unwrap(resolvedContent);
 				target.replaceChildren(...Array.from(wrapper$1.children));
 			}
 		});
@@ -1277,4 +1294,4 @@ Object.defineProperty(exports, 'unwrap', {
     return unwrap;
   }
 });
-//# sourceMappingURL=core-CHT9vlTa.cjs.map
+//# sourceMappingURL=core-B4-nrIoM.cjs.map

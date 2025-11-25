@@ -1,6 +1,8 @@
 import { unwrap } from "../router/index";
 import { getTagKey } from "../meta";
 import type { DOMElement } from "../types/types"; 
+import { isFunction } from "../util";
+import { effect } from "@core";
 
 const isTag = (target: DOMElement, ...tagNames: string[]) => {
   return tagNames.some((tag) =>
@@ -17,7 +19,7 @@ const hasHydrationKeys = (target: Element) => {
  */
 export const hydrate = (
   target: DOMElement,
-  content: DOMElement | DOMElement[] | Promise<DOMElement | DOMElement[]>,
+  content: DOMElement | DOMElement[] | Promise<DOMElement | DOMElement[]> | (() => DOMElement | DOMElement[]),
 ) => {
   if (content instanceof Promise) {
     content.then((res) => {
@@ -32,6 +34,19 @@ export const hydrate = (
     });
     return target;
   }
+  if (isFunction(content)) {
+		effect(() => {
+			const resolvedContent = content();
+			console.log({ isFunction: isFunction(content), resolvedContent })
+			if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+			else {
+				const wrapper = unwrap(resolvedContent);
+				target.replaceChildren(...Array.from(wrapper.children) as DOMElement[]);
+			}
+
+		})
+		return target;
+	}
 
   const wrapper = unwrap(content);
   const currentChildren = Array.from(target.children);

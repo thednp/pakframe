@@ -1,4 +1,4 @@
-import { Accessor, CSSProperties, DOMElement, DOMNodeAttributes, FunctionMaybe, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, PropValueOrAccessor, Setter, StoreObject, TagNames } from "./types-pzt1ZtaD.js";
+import { Accessor, CSSProperties, DOMElement, DOMNodeAttributes, FunctionMaybe, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, PropValueOrAccessor, Setter, StoreObject, TagNames } from "./types-CjexJQM1.cjs";
 
 //#region src/core/h.d.ts
 declare const add: (parent: DOMElement, child?: FunctionMaybe<RegExp | Date> | Accessor<MaybeChildNode> | MaybeChildNode | Promise<MaybeChildNode>) => void;
@@ -10,7 +10,7 @@ declare function h<K extends TagNames>(tagName: K, first?: MaybeChildNode | DOMN
 /**
  * Hydrate a target element
  */
-declare const hydrate: (target: DOMElement, content: DOMElement | DOMElement[] | Promise<DOMElement | DOMElement[]>) => DOMElement;
+declare const hydrate: (target: DOMElement, content: DOMElement | DOMElement[] | Promise<DOMElement | DOMElement[]> | (() => DOMElement | DOMElement[])) => DOMElement;
 //#endregion
 //#region src/core/state.d.ts
 declare function untrack<T>(fn: Accessor<T>): T;
@@ -52,4 +52,4 @@ declare const styleToString: (styleValue?: FunctionMaybe<CSSProperties | string 
 declare const style: (target: DOMElement, styleValue?: FunctionMaybe<CSSProperties | string | null | undefined>) => void;
 //#endregion
 export { List, ListProps, Show, add, createDomElement, effect, getStyleObject, h, hydrate, listen, memo, onMount, setAttribute, signal, store, style, styleToString, untrack };
-//# sourceMappingURL=index-BpWREiYo.d.ts.map
+//# sourceMappingURL=index-kBhP0eJy.d.cts.map

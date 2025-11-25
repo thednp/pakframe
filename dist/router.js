@@ -1,4 +1,4 @@
 import "./store-JUSkKPgE.js";
-import { A, Route, Router, cache, executeLifecycle, extractParams, fixRouteUrl, getCached, isCurrentPage, isLazyComponent, lazy, navigate, routerState, routes, setRouterState, unwrap } from "./core-DGJDEet9.js";
+import { A, Route, Router, cache, executeLifecycle, extractParams, fixRouteUrl, getCached, isCurrentPage, isLazyComponent, lazy, navigate, routerState, routes, setRouterState, unwrap } from "./core-C51zDNL-.js";
 
 export { A, Route, Router, cache, executeLifecycle, extractParams, fixRouteUrl, getCached, isCurrentPage, isLazyComponent, lazy, navigate, routerState, routes, setRouterState, unwrap };

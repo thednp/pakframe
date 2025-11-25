@@ -125,12 +125,12 @@ const generateRouteProloaders = (route) => {
 };
 const generateComponentRoute = (route) => {
 	if (route.layouts?.length > 0) {
-		const layoutImports = route.layouts.map((layout) => `const ${layout.id}Module = await import('${JSON.stringify(layout.path)}');\nconst ${layout.id}Page = ${layout.id}Module.Layout || ${layout.id}Module.Page || ${layout.id}Module.default;`).join("\n");
+		const layoutImports = route.layouts.map((layout) => `const ${layout.id}Module = await import(${JSON.stringify(layout.path)});\nconst ${layout.id}Page = ${layout.id}Module.Layout || ${layout.id}Module.Page || ${layout.id}Module.default;`).join("\n");
 		const pageComponent = route.layouts.reduce((acc, layout) => `${layout.id}Page({ children: ${acc} })`, "Page()");
 		return `lazy(() => {
       const importFn = async () => {
         ${layoutImports}
-        const PageModule = await import('${JSON.stringify(route.path)}');
+        const PageModule = await import(${JSON.stringify(route.path)});
         const Page = PageModule?.Page || PageModule?.default;
   
         return Promise.resolve({
