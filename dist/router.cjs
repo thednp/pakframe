@@ -1,5 +1,5 @@
 require('./store-DZCiBSN0.cjs');
-const require_core = require('./core-B4-nrIoM.cjs');
+const require_core = require('./core-DMZRApd8.cjs');
 
 exports.A = require_core.A;
 exports.Route = require_core.Route;

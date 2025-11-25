@@ -796,18 +796,18 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const cp = Array.isArray(md) || md instanceof Element ? md : typeof md.component === "function" ? md.component() : md.component;
 			return cp ? Array.from(unwrap(cp).children) : [];
 		};
-		add(wrapper, () => {
+		effect(() => {
 			const kudos = children();
 			console.log({
 				wrapper,
 				kudos,
 				isConnected
 			});
+			if (isConnected) add(wrapper, kudos);
+			else wrapper.remove();
 			isConnected = true;
 			// istanbul ignore else
 			if (document.head) hydrate(document.head, Head());
-			hydrate(wrapper, kudos);
-			return kudos;
 		});
 		return wrapper;
 	};
@@ -1294,4 +1294,4 @@ Object.defineProperty(exports, 'unwrap', {
     return unwrap;
   }
 });
-//# sourceMappingURL=core-B4-nrIoM.cjs.map
+//# sourceMappingURL=core-DMZRApd8.cjs.map

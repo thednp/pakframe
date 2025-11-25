@@ -1,4 +1,4 @@
-import { add, h, memo } from "@core";
+import { add, h, memo, effect } from "@core";
 import type { DOMElement, MaybeChildNode } from "../types/types";
 import { isServer } from "../util";
 import { routerState, setRouterState } from "./state";
@@ -7,6 +7,7 @@ import { executeLifecycle } from "../helpers/router-helpers";
 import { unwrap } from "./unwrap";
 import { hydrate } from "../core/hydrate";
 import { Head, initializeHeadTags } from "../meta";
+import type { ComponentModule } from "@router";
 
 let isConnected = false;
 
@@ -95,7 +96,6 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
 
       console.log("Router", { root, children })
 
-      // add(wrapper, children as Promise<MaybeChildNode[]>);
       add(wrapper, children() as MaybeChildNode[]);
       return wrapper;
     }
@@ -122,40 +122,20 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
         : /* istanbul ignore next */ [];
     };
 
-    // const component = () => {
-    //   const kids = () => children();
-    //   const result = () => {
-    //     return effect(() => {
-    //       const kudos = kids();
-    //       isConnected = true;
-    //       // istanbul ignore else
-    //       if (document.head) {
-    //         hydrate(document.head, Head());
-    //       }
-    //       return hydrate(wrapper, kudos);
-    //     });
-    //   };
-    //   return result();
-    // };
-    // const finalResult = component();
+		effect(() => {
+			const kudos = children();
+			console.log({
+				wrapper,
+				kudos,
+				isConnected
+			});
+			if (isConnected) add(wrapper, kudos as MaybeChildNode[]);
+			else wrapper.remove();
 
-    // console.log({root, finalResult })
-
-    // return finalResult
-    //   ? /* istanbul ignore next*/ add(wrapper, finalResult())
-    //   : wrapper;
-
-    add(wrapper, () => {
-      const kudos = children();
-      console.log({ wrapper, kudos, isConnected })
-      isConnected = true;
-      // istanbul ignore else
-      if (document.head) {
-        hydrate(document.head, Head());
-      }
-      hydrate(wrapper, kudos);
-      return kudos;
-    });
+			isConnected = true;
+			// istanbul ignore else
+			if (document.head) hydrate(document.head, Head());
+		})
 
     return wrapper;
   };
