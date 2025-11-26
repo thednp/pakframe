@@ -1,5 +1,5 @@
 const require_chunk = require('./chunk-CUT6urMc.cjs');
-const require_store = require('./store-DZCiBSN0.cjs');
+const require_util = require('./util-BI9HmrNV.cjs');
 const __thednp_domparser = require_chunk.__toESM(require("@thednp/domparser"));
 
 //#region src/core/state.ts
@@ -29,14 +29,14 @@ function onMount(fn) {
 	});
 }
 function signal(value) {
-	value = require_store.isFunction(value) ? value() : value;
+	value = require_util.isFunction(value) ? value() : value;
 	const subscriptions = /* @__PURE__ */ new Set();
 	return [() => {
 		const running = context[context.length - 1];
 		if (running) subscribe(running, subscriptions);
 		return value;
 	}, (nextValue) => {
-		if (require_store.isFunction(nextValue)) value = nextValue(value);
+		if (require_util.isFunction(nextValue)) value = nextValue(value);
 		else value = nextValue;
 		const subs = Array.from(subscriptions);
 		for (const sub of subs) sub.execute();
@@ -83,7 +83,7 @@ function memo(value) {
 * @param value - The attribute value; falsy values remove the attribute.
 */
 const setAttribute = (element, key, rawValue) => {
-	const value = require_store.isFunction(rawValue) ? rawValue() : rawValue;
+	const value = require_util.isFunction(rawValue) ? rawValue() : rawValue;
 	const attrKey = key.indexOf(":") > -1 ? key.replace(/^[^:]+:/, "") : key;
 	const attrNamespaces = {
 		"xlink:": "http://www.w3.org/1999/xlink",
@@ -101,7 +101,7 @@ const setAttribute = (element, key, rawValue) => {
 		element.removeAttribute(key);
 	} else {
 		const t = typeof value;
-		const attrValue = value === true ? "" : t === "number" ? String(value) : !require_store.urlAttributes.includes(key) ? (0, __thednp_domparser.escape)(value) : require_store.needsEncoding(key, value) ? encodeURI(value) : value;
+		const attrValue = value === true ? "" : t === "number" ? String(value) : !require_util.urlAttributes.includes(key) ? (0, __thednp_domparser.escape)(value) : require_util.needsEncoding(key, value) ? encodeURI(value) : value;
 		element.setAttributeNS(attrNS, attrKey, attrValue);
 	}
 };
@@ -111,7 +111,7 @@ const getStyleObject = (styleObject) => {
 	let value;
 	for (const [objKey, rawValue] of Object.entries(styleObject)) {
 		key = objKey.split(/(?=[A-Z])/).join("-").toLowerCase();
-		value = require_store.isFunction(rawValue) ? rawValue() : rawValue;
+		value = require_util.isFunction(rawValue) ? rawValue() : rawValue;
 		if (value) output[key] = value;
 	}
 	return output;
@@ -120,16 +120,16 @@ const getStyleObject = (styleObject) => {
 * Allows the "framework" to support CSS objects
 */
 const styleToString = (styleValue) => {
-	const styleVal = require_store.isFunction(styleValue) ? styleValue() : styleValue;
-	return typeof styleVal === "string" ? styleVal : require_store.isObject(styleVal) ? Object.entries(getStyleObject(styleVal)).reduce((acc, [key, value]) => acc + key + ":" + value + ";", "") : "";
+	const styleVal = require_util.isFunction(styleValue) ? styleValue() : styleValue;
+	return typeof styleVal === "string" ? styleVal : require_util.isObject(styleVal) ? Object.entries(getStyleObject(styleVal)).reduce((acc, [key, value]) => acc + key + ":" + value + ";", "") : "";
 };
 const style = (target, styleValue) => {
-	const styleVal = require_store.isFunction(styleValue) ? styleValue() : styleValue;
-	if (require_store.isObject(styleVal)) {
+	const styleVal = require_util.isFunction(styleValue) ? styleValue() : styleValue;
+	if (require_util.isObject(styleVal)) {
 		const styleObject = getStyleObject(styleVal);
 		if (Object.values(styleObject).filter((v) => v).length) Object.assign(target.style, styleObject);
 		else target.removeAttribute("style");
-	} else if (require_store.isString(styleVal) && styleVal.length) target.style.cssText = styleVal;
+	} else if (require_util.isString(styleVal) && styleVal.length) target.style.cssText = styleVal;
 	else target.removeAttribute("style");
 };
 
@@ -260,21 +260,21 @@ const namespaceElements = Object.entries(namespaceElementsMap).reduce((acc, [nam
 const add = (parent, child) => {
 	if (!parent || !child) return;
 	if (child instanceof Promise) child.then((resolved) => add(parent, resolved));
-	else if (require_store.isArray(child)) child.forEach((c) => add(parent, c));
-	else if (require_store.isNode(child)) parent.appendChild(child);
-	else if (require_store.isFunction(child)) {
+	else if (require_util.isArray(child)) child.forEach((c) => add(parent, c));
+	else if (require_util.isNode(child)) parent.appendChild(child);
+	else if (require_util.isFunction(child)) {
 		const textNode = document.createTextNode("");
 		parent.appendChild(textNode);
-		const realChild = require_store.isFunction(untrack(child)) ? untrack(child) : child;
+		const realChild = require_util.isFunction(untrack(child)) ? untrack(child) : child;
 		effect(() => {
 			const value = realChild();
-			if (require_store.isArray(value)) {
+			if (require_util.isArray(value)) {
 				parent.textContent = "";
 				value.forEach((v) => add(parent, v));
-			} else if (require_store.isNode(value)) add(parent, child);
-			else textNode.textContent = require_store.getStringValue(value);
+			} else if (require_util.isNode(value)) add(parent, child);
+			else textNode.textContent = require_util.getStringValue(value);
 		});
-	} else parent.appendChild(document.createTextNode(require_store.getStringValue(child)));
+	} else parent.appendChild(document.createTextNode(require_util.getStringValue(child)));
 };
 const createDomElement = (tagName) => {
 	const ns = namespaceElements[tagName];
@@ -285,7 +285,7 @@ function listen(target, event, handler, options) {
 }
 function h(tagName, first, ...children) {
 	const element = createDomElement(tagName);
-	if (require_store.isObject(first) && !require_store.isNode(first) && !require_store.isArray(first)) Object.entries(first).forEach(([key, value]) => {
+	if (require_util.isObject(first) && !require_util.isNode(first) && !require_util.isArray(first)) Object.entries(first).forEach(([key, value]) => {
 		if (key.startsWith("on")) {
 			if (typeof value !== "function") return;
 			const eventName = key.slice(2).toLowerCase();
@@ -312,12 +312,12 @@ const fixRouteUrl = (url) => {
 	if (url.startsWith("/")) return url;
 	return `/${url}`;
 };
-const initialPath = !require_store.isServer ? globalThis.location.pathname : "/";
-const initialSearch = !require_store.isServer ? globalThis.location.search : "";
+const initialPath = !require_util.isServer ? globalThis.location.pathname : "/";
+const initialSearch = !require_util.isServer ? globalThis.location.search : "";
 /**
 * The global router state.
 */
-const routerState = require_store.store({
+const routerState = store({
 	pathname: initialPath,
 	searchParams: new URLSearchParams(initialSearch),
 	params: {}
@@ -342,13 +342,14 @@ const isCurrentPage = (pageName) => {
 * Check if component is a lazy component
 */
 const isLazyComponent = (component) => {
-	if (require_store.isServer && typeof component === "function") return component.constructor.name.includes("AsyncFunction");
+	if (require_util.isServer && typeof component === "function") return component.constructor.name.includes("AsyncFunction");
 	return component?.isLazy === true;
 };
 /**
 * Execute lifecycle methods preload and / or load
 */
-const executeLifecycle = async ({ route }, params) => {
+const executeLifecycle = async (module$1, params) => {
+	const { route } = module$1 instanceof Promise ? await module$1 : module$1;
 	// istanbul ignore next
 	if (!route) return true;
 	try {
@@ -392,7 +393,7 @@ const cache = (key, value) => {
 * Registers a lazy component.
 */
 const lazy = (importFn) => {
-	if (require_store.isServer) return async () => {
+	if (require_util.isServer) return async () => {
 		const cached = getCached(importFn);
 		/* istanbul ignore next */
 		if (cached) return cached;
@@ -523,7 +524,7 @@ const matchRoute = (initialPath$1) => {
 const navigate = (path, options = { replace: false }) => {
 	const { replace = false } = options;
 	// istanbul ignore else
-	if (!require_store.isServer) {
+	if (!require_util.isServer) {
 		const url = new URL(path, globalThis.location.origin);
 		const route = matchRoute(url.pathname);
 		if (replace) globalThis.history.replaceState({}, "", path);
@@ -575,7 +576,7 @@ const A = ({ href, children,...rest } = {}, ...otherChildren) => {
 */
 const unwrap = (source, ...children) => {
 	const layout = () => {
-		const pageChildren = source && typeof source === "object" && "children" in source && require_store.isArray(source?.children) ? source.children : require_store.isFunction(source) ? [...source().children || source()] : typeof HTMLElement !== "undefined" && source instanceof HTMLElement ? [...source.children] : require_store.isArray(source) ? source : [source];
+		const pageChildren = source && typeof source === "object" && "children" in source && require_util.isArray(source?.children) ? source.children : require_util.isFunction(source) ? [...source().children || source()] : typeof HTMLElement !== "undefined" && source instanceof HTMLElement ? [...source.children] : require_util.isArray(source) ? source : [source];
 		return { children: [...children || [], ...pageChildren] };
 	};
 	return layout();
@@ -628,7 +629,7 @@ const createHeadTags = () => /* @__PURE__ */ new Map();
 * on the server and the client.
 */
 const getHeadTags = (() => {
-	if (require_store.isServer) {
+	if (require_util.isServer) {
 		let serverHeadTags;
 		return () => {
 			if (!serverHeadTags) serverHeadTags = createHeadTags();
@@ -651,7 +652,7 @@ const resetHeadTags = () => {
 const initializeHeadTags = () => {
 	const tags = getHeadTags();
 	/* istanbul ignore else */
-	if (!tags.size && !require_store.isServer) Array.from(document.head.children).forEach((tag) => {
+	if (!tags.size && !require_util.isServer) Array.from(document.head.children).forEach((tag) => {
 		tags.set(getTagKey(tag), tag);
 	});
 };
@@ -728,7 +729,7 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			return wrapper;
 		}
 		routerState.params = route.params || {};
-		if (require_store.isServer) {
+		if (require_util.isServer) {
 			const renderComponent = async () => {
 				try {
 					const module$1 = await route.component();
@@ -768,18 +769,17 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				// istanbul ignore next - cannot test
 				const cp = Array.isArray(module$1) || module$1 instanceof Element ? module$1 : typeof module$1.component === "function" ? module$1.component() : module$1.component;
 				// istanbul ignore next - cannot test
-				const kids = () => cp ? Array.from(unwrap(cp).children) : [];
-				const kudos = kids();
 				isConnected = true;
 				// istanbul ignore else
 				if (document.head) hydrate(document.head, Head());
-				return kudos;
+				return cp ? Array.from(unwrap(cp).children) : [];
 			};
+			const finalChildren = children$1();
 			console.log("Router", {
 				root,
-				children: children$1
+				finalChildren
 			});
-			add(wrapper, children$1());
+			add(wrapper, finalChildren);
 			return wrapper;
 		}
 		const csrRoute = memo(() => {
@@ -790,10 +790,10 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const route$1 = csrRoute();
 			// istanbul ignore if - can only be tested in client
 			if (!route$1) return [h("div", "No Route Found")];
-			const md = route$1.component();
-			executeLifecycle(md, route$1.params);
+			const module$1 = route$1.component();
+			executeLifecycle(module$1, route$1.params);
 			// istanbul ignore next - cannot test all cases
-			const cp = Array.isArray(md) || md instanceof Element ? md : typeof md.component === "function" ? md.component() : md.component;
+			const cp = Array.isArray(module$1) || module$1 instanceof Element ? module$1 : typeof module$1.component === "function" ? module$1.component() : module$1.component;
 			return cp ? Array.from(unwrap(cp).children) : [];
 		};
 		effect(() => {
@@ -803,8 +803,8 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				kudos,
 				isConnected
 			});
+			// istanbul ignore else
 			if (isConnected) add(wrapper, kudos);
-			else wrapper.remove();
 			isConnected = true;
 			// istanbul ignore else
 			if (document.head) hydrate(document.head, Head());
@@ -822,32 +822,31 @@ const isTag = (target, ...tagNames) => {
 const hasHydrationKeys = (target) => {
 	return target.querySelector("[data-hk]") !== void 0;
 };
+const hydrateAction = (target, resolvedContent) => {
+	if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+	else {
+		const wrapper = unwrap(resolvedContent);
+		target.replaceChildren(...Array.from(wrapper.children));
+	}
+};
 /**
 * Hydrate a target element
 */
 const hydrate = (target, content) => {
 	if (content instanceof Promise) {
-		content.then((res) => {
-			if (!target.hasAttribute("data-h")) hydrate(target, res);
-			else {
-				const wrapper$1 = unwrap(res);
-				target.replaceChildren(...Array.from(wrapper$1.children));
-			}
+		content.then((resolvedContent) => {
+			hydrateAction(target, resolvedContent);
 		});
 		return target;
 	}
-	if (require_store.isFunction(content)) {
+	if (require_util.isFunction(content)) {
 		effect(() => {
 			const resolvedContent = content();
 			console.log({
-				isFunction: require_store.isFunction(content),
+				isFunction: require_util.isFunction(content),
 				resolvedContent
 			});
-			if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
-			else {
-				const wrapper$1 = unwrap(resolvedContent);
-				target.replaceChildren(...Array.from(wrapper$1.children));
-			}
+			hydrateAction(target, resolvedContent);
 		});
 		return target;
 	}
@@ -916,8 +915,8 @@ const hydrate = (target, content) => {
 //#endregion
 //#region src/core/store.ts
 function processArrayItem(item) {
-	if (!require_store.isPlainObject(item) || item && item["_"]) return item;
-	if (require_store.isPlainObject(item)) {
+	if (!require_util.isPlainObject(item) || item && item["_"]) return item;
+	if (require_util.isPlainObject(item)) {
 		const newObj = {};
 		createState(item, newObj);
 		Object.defineProperty(newObj, "_", {
@@ -932,7 +931,7 @@ function createArrayProxy(get, set) {
 	return new Proxy([], { get(_, prop) {
 		const arr = get();
 		const typedProp = prop;
-		if (require_store.isFunction(Array.prototype[typedProp])) return (...args) => {
+		if (require_util.isFunction(Array.prototype[typedProp])) return (...args) => {
 			const result = Array.prototype[typedProp].apply(arr, args);
 			if ([
 				"push",
@@ -951,7 +950,7 @@ function reconcileArrays(current, next) {
 	return next.some((item, i) => item !== current[i]) ? next.map(processArrayItem) : current;
 }
 function createState(obj, parentReceiver) {
-	for (const [key, value] of Object.entries(obj)) if (require_store.isArray(value)) {
+	for (const [key, value] of Object.entries(obj)) if (require_util.isArray(value)) {
 		const [get, set] = signal(value.map(processArrayItem));
 		const proxy = createArrayProxy(get, set);
 		Object.defineProperty(parentReceiver, key, {
@@ -963,7 +962,7 @@ function createState(obj, parentReceiver) {
 			},
 			enumerable: true
 		});
-	} else if (require_store.isPlainObject(value)) parentReceiver[key] = createState(value, {});
+	} else if (require_util.isPlainObject(value)) parentReceiver[key] = createState(value, {});
 	else {
 		const [get, set] = signal(value);
 		Object.defineProperty(parentReceiver, key, {
@@ -973,7 +972,7 @@ function createState(obj, parentReceiver) {
 	}
 	return parentReceiver;
 }
-function store$1(init) {
+function store(init) {
 	return createState(init, {});
 }
 
@@ -1008,16 +1007,16 @@ const List = (props) => {
 	});
 	queueMicrotask(() => {
 		parentElement = placeholder.parentElement;
-		if (require_store.isFunction(each)) updateItems(untrack(each));
+		if (require_util.isFunction(each)) updateItems(untrack(each));
 	});
 	return placeholder;
 };
 function Show({ when, children }) {
 	const placeholder = document.createTextNode("");
-	const initialWhen = () => require_store.isFunction(when) ? when() : when;
+	const initialWhen = () => require_util.isFunction(when) ? when() : when;
 	const newNodes = () => {
-		const nodes = require_store.isFunction(children) ? children() : children;
-		return require_store.isArray(nodes) ? nodes : [nodes];
+		const nodes = require_util.isFunction(children) ? children() : children;
+		return require_util.isArray(nodes) ? nodes : [nodes];
 	};
 	effect(() => {
 		const condition = initialWhen();
@@ -1267,7 +1266,7 @@ Object.defineProperty(exports, 'signal', {
 Object.defineProperty(exports, 'store', {
   enumerable: true,
   get: function () {
-    return store$1;
+    return store;
   }
 });
 Object.defineProperty(exports, 'style', {
@@ -1294,4 +1293,4 @@ Object.defineProperty(exports, 'unwrap', {
     return unwrap;
   }
 });
-//# sourceMappingURL=core-DMZRApd8.cjs.map
+//# sourceMappingURL=core-ClWVxI4s.cjs.map

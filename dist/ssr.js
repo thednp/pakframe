@@ -1,5 +1,5 @@
 import "virtual:@pakframe/routes";
-import { effect, getStringValue, isArray, isFunction, isNode, isObject, memo, needsEncoding, onMount, signal, store, untrack, urlAttributes } from "./store-JUSkKPgE.js";
+import { getStringValue, isArray, isFunction, isNode, isObject, isPlainObject, needsEncoding, urlAttributes } from "./util-B_frEJmo.js";
 import { createDocument, escape } from "@thednp/domparser";
 import { basename } from "node:path";
 
@@ -86,6 +86,55 @@ function h(tagName, first, ...children) {
 	else add(element, first);
 	add(element, children);
 	return element;
+}
+
+//#endregion
+//#region src/ssr/state.ts
+function untrack(fn) {
+	return fn();
+}
+function onMount(fn) {
+	let init = false;
+	if (init) return;
+	init = true;
+	fn();
+	return () => {};
+}
+function signal(value) {
+	value = isFunction(value) ? value() : value;
+	return [() => value, (nextValue) => {
+		if (isFunction(nextValue)) value = nextValue(value);
+		else value = nextValue;
+	}];
+}
+function effect(fn) {
+	fn();
+}
+function memo(value) {
+	let v;
+	try {
+		v = value();
+	} catch (err) {
+		console.error(err);
+	}
+	return () => v;
+}
+
+//#endregion
+//#region src/ssr/store.ts
+function createState(obj, parentReceiver) {
+	for (const [key, value] of Object.entries(obj)) if (isPlainObject(value)) parentReceiver[key] = createState(value, {});
+	else {
+		const [get, set] = signal(value);
+		Object.defineProperty(parentReceiver, key, {
+			get,
+			set
+		});
+	}
+	return parentReceiver;
+}
+function store(init) {
+	return createState(init, {});
 }
 
 //#endregion

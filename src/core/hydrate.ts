@@ -14,6 +14,14 @@ const hasHydrationKeys = (target: Element) => {
   return target.querySelector("[data-hk]") !== undefined;
 };
 
+const hydrateAction = (target: DOMElement, resolvedContent: DOMElement | DOMElement[]) => {
+  if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+  else {
+    const wrapper = unwrap(resolvedContent);
+    target.replaceChildren(...Array.from(wrapper.children) as DOMElement[]);
+  }
+}
+
 /**
  * Hydrate a target element
  */
@@ -22,15 +30,16 @@ export const hydrate = (
   content: DOMElement | DOMElement[] | Promise<DOMElement | DOMElement[]> | (() => DOMElement | DOMElement[]),
 ) => {
   if (content instanceof Promise) {
-    content.then((res) => {
-      if (!target.hasAttribute("data-h")) {
-        hydrate(target, res);
-      } else {
-        const wrapper = unwrap(res);
-        target.replaceChildren(
-          ...(Array.from(wrapper.children) as (DOMElement | Text)[]),
-        );
-      }
+    content.then((resolvedContent) => {
+      hydrateAction(target, resolvedContent);
+      // if (!target.hasAttribute("data-h")) {
+      //   hydrate(target, res);
+      // } else {
+      //   const wrapper = unwrap(res);
+      //   target.replaceChildren(
+      //     ...(Array.from(wrapper.children) as (DOMElement | Text)[]),
+      //   );
+      // }
     });
     return target;
   }
@@ -38,11 +47,13 @@ export const hydrate = (
 		effect(() => {
 			const resolvedContent = content();
 			console.log({ isFunction: isFunction(content), resolvedContent })
-			if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
-			else {
-				const wrapper = unwrap(resolvedContent);
-				target.replaceChildren(...Array.from(wrapper.children) as DOMElement[]);
-			}
+      hydrateAction(target, resolvedContent);
+
+			// if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+			// else {
+			// 	const wrapper = unwrap(resolvedContent);
+			// 	target.replaceChildren(...Array.from(wrapper.children) as DOMElement[]);
+			// }
 
 		})
 		return target;

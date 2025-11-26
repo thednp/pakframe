@@ -1,2 +1,2 @@
 /// <reference types="vite/client" />
-/// <reference types="pakframe" />
+/// <reference types="pakframe/jsx" />

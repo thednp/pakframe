@@ -56,61 +56,6 @@ function needsEncoding(attrKey, attrValue) {
 }
 
 //#endregion
-//#region src/ssr/state.ts
-function untrack(fn) {
-	return fn();
-}
-function onMount(fn) {
-	let init = false;
-	if (init) return;
-	init = true;
-	fn();
-	return () => {};
-}
-function signal(value) {
-	value = isFunction(value) ? value() : value;
-	return [() => value, (nextValue) => {
-		if (isFunction(nextValue)) value = nextValue(value);
-		else value = nextValue;
-	}];
-}
-function effect(fn) {
-	fn();
-}
-function memo(value) {
-	let v;
-	try {
-		v = value();
-	} catch (err) {
-		console.error(err);
-	}
-	return () => v;
-}
-
-//#endregion
-//#region src/ssr/store.ts
-function createState(obj, parentReceiver) {
-	for (const [key, value] of Object.entries(obj)) if (isPlainObject(value)) parentReceiver[key] = createState(value, {});
-	else {
-		const [get, set] = signal(value);
-		Object.defineProperty(parentReceiver, key, {
-			get,
-			set
-		});
-	}
-	return parentReceiver;
-}
-function store(init) {
-	return createState(init, {});
-}
-
-//#endregion
-Object.defineProperty(exports, 'effect', {
-  enumerable: true,
-  get: function () {
-    return effect;
-  }
-});
 Object.defineProperty(exports, 'getStringValue', {
   enumerable: true,
   get: function () {
@@ -159,40 +104,10 @@ Object.defineProperty(exports, 'isString', {
     return isString;
   }
 });
-Object.defineProperty(exports, 'memo', {
-  enumerable: true,
-  get: function () {
-    return memo;
-  }
-});
 Object.defineProperty(exports, 'needsEncoding', {
   enumerable: true,
   get: function () {
     return needsEncoding;
-  }
-});
-Object.defineProperty(exports, 'onMount', {
-  enumerable: true,
-  get: function () {
-    return onMount;
-  }
-});
-Object.defineProperty(exports, 'signal', {
-  enumerable: true,
-  get: function () {
-    return signal;
-  }
-});
-Object.defineProperty(exports, 'store', {
-  enumerable: true,
-  get: function () {
-    return store;
-  }
-});
-Object.defineProperty(exports, 'untrack', {
-  enumerable: true,
-  get: function () {
-    return untrack;
   }
 });
 Object.defineProperty(exports, 'urlAttributes', {
@@ -201,4 +116,4 @@ Object.defineProperty(exports, 'urlAttributes', {
     return urlAttributes;
   }
 });
-//# sourceMappingURL=store-DZCiBSN0.cjs.map
+//# sourceMappingURL=util-BI9HmrNV.cjs.map

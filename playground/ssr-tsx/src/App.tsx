@@ -2,7 +2,7 @@ import "./style.css";
 import { Counter } from "./components/counter.ts";
 import { TodoApp } from "./components/todo.ts";
 import { MyComponent } from "./components/MyComponent.tsx";
-import { add } from "../../../../framework/index.ts";
+import { add } from "pakframe";
 
 export function App() {
   return (

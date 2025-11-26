@@ -7,8 +7,8 @@ const __dirname = dirname(__filename);
 const toAbsolute = (p: string) => resolve(__dirname, p);
 
 export default defineConfig({
-  esbuild: {
-    jsx: "automatic",
-    jsxImportSource: "pakframe",
-  },
+  // esbuild: {
+  //   jsx: "automatic",
+  //   jsxImportSource: "pakframe",
+  // },
 });

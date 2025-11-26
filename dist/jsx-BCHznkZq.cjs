@@ -1,21 +1,21 @@
-const require_store = require('./store-DZCiBSN0.cjs');
-const require_core = require('./core-DMZRApd8.cjs');
+const require_util = require('./util-BI9HmrNV.cjs');
+const require_core = require('./core-ClWVxI4s.cjs');
 
 //#region src/jsx/jsx.ts
 const jsx = (jsxTag, { children, ref, style: style$1,...rest }) => {
 	if (typeof jsxTag === "string") {
 		const element = require_core.h(jsxTag, rest, children);
-		if (require_store.isFunction(ref)) ref(element);
+		if (require_util.isFunction(ref)) ref(element);
 		require_core.effect(() => {
 			require_core.style(element, style$1);
 		});
 		for (const [key, value] of Object.entries(rest)) {
-			if (key.startsWith("on") && !require_store.isServer) {
+			if (key.startsWith("on") && !require_util.isServer) {
 				const eventName = key.slice(2).toLowerCase();
 				element.addEventListener(eventName, value);
 				continue;
 			}
-			if (require_store.isFunction(value)) {
+			if (require_util.isFunction(value)) {
 				require_core.effect(() => {
 					require_core.setAttribute(element, key, value());
 				});
@@ -47,4 +47,4 @@ Object.defineProperty(exports, 'jsx', {
     return jsx;
   }
 });
-//# sourceMappingURL=jsx-CMYIOH2S.cjs.map
+//# sourceMappingURL=jsx-BCHznkZq.cjs.map

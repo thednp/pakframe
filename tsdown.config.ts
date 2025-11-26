@@ -1,23 +1,9 @@
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'tsdown';
-
-const injectRoutes_ = () => ({
-  name: 'inject-routes',
-  transform(code: string, id: string, smth, smth1) {
-    // Target a specific file by ID (full path)
-    if (id.includes('src/router/Router.ts')) {
-      // Inject text, e.g., prepend a comment or variable
-      code = `import "virtual:@pakframe/routes";\n${code}`;
-      // Or more advanced: use regex to insert at a specific line
-      console.log("injectRoutes-code:", id, smth, smth1)
-    }
-    return { code };
-  }
-});
+import { defineConfig  } from 'tsdown';
 
 const injectRoutes = () => ({
   name: 'inject-virtual-import',
-  renderChunk(code, chunk) {
+  renderChunk(code: string, chunk: { fileName: string }) {
     // Target the specific output file (adjust 'some-file.js' to match your chunk)
     if (['index.js', 'ssr.js'].some(fileName => chunk.fileName.includes(fileName))) {
       // Prepend the import at the very beginning

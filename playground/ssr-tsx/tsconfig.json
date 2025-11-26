@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "jsx": "preserve",
-    "jsxImportSource": "@jsx",
+    "jsxImportSource": "pakframe",
     // "types": ["./src/framework/jsx/jsx.d.ts"],
     // "paths": {
     //   "@jsx/*": ["./src/framework/jsx/*"]

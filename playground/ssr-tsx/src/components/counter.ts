@@ -1,4 +1,4 @@
-import { createElement, signal } from "../framework";
+import { h, signal } from "pakframe";
 
 function fibonacci(n: number): number {
   if (n <= 1) return n;
@@ -23,12 +23,12 @@ const doubleCount = () => {
 // const doubleCount = () => count() * 2;
 
 export function Counter() {
-  const button1 = createElement("button", {
+  const button1 = h("button", {
     class: "my-button-1",
     "data-count": count,
     onclick: () => setCount(count() + 1),
   }, () => `Count is ${count()}`);
-  const button2 = createElement(
+  const button2 = h(
     "button",
     {
       class: "my-button-2",

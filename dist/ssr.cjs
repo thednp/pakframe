@@ -1,6 +1,6 @@
 require("virtual:@pakframe/routes");
 const require_chunk = require('./chunk-CUT6urMc.cjs');
-const require_store = require('./store-DZCiBSN0.cjs');
+const require_util = require('./util-BI9HmrNV.cjs');
 const __thednp_domparser = require_chunk.__toESM(require("@thednp/domparser"));
 const node_path = require_chunk.__toESM(require("node:path"));
 
@@ -15,15 +15,15 @@ const setHydrationKey = (target) => {
 * @param value - The attribute value; falsy values remove the attribute.
 */
 const setAttribute = (element, key, rawValue) => {
-	const value = require_store.isFunction(rawValue) ? rawValue() : rawValue;
+	const value = require_util.isFunction(rawValue) ? rawValue() : rawValue;
 	const attrKey = key.indexOf(":") > -1 ? key.replace(/^[^:]+:/, "") : key;
 	if (value == null || value === false || value === "" || value === void 0) {
 		element.removeAttribute(attrKey);
 		element.removeAttribute(key);
 	} else {
 		const t = typeof value;
-		const attrValue = value === true ? "" : t === "number" ? String(value) : !require_store.urlAttributes.includes(key) ? (0, __thednp_domparser.escape)(value) : require_store.needsEncoding(key, value) ? encodeURI(value) : value;
-		require_store.isFunction(rawValue) && setHydrationKey(element);
+		const attrValue = value === true ? "" : t === "number" ? String(value) : !require_util.urlAttributes.includes(key) ? (0, __thednp_domparser.escape)(value) : require_util.needsEncoding(key, value) ? encodeURI(value) : value;
+		require_util.isFunction(rawValue) && setHydrationKey(element);
 		element.setAttribute(attrKey, attrValue);
 	}
 };
@@ -33,7 +33,7 @@ const getStyleObject = (styleObject) => {
 	let value;
 	for (const [objKey, rawValue] of Object.entries(styleObject)) {
 		key = objKey.split(/(?=[A-Z])/).join("-").toLowerCase();
-		value = require_store.isFunction(rawValue) ? rawValue() : rawValue;
+		value = require_util.isFunction(rawValue) ? rawValue() : rawValue;
 		if (value) output[key] = value;
 	}
 	return output;
@@ -42,14 +42,14 @@ const getStyleObject = (styleObject) => {
 * Allows the "framework" to support CSS objects
 */
 const styleToString = (styleValue) => {
-	const styleVal = require_store.isFunction(styleValue) ? styleValue() : styleValue;
-	return typeof styleVal === "string" ? styleVal : require_store.isObject(styleVal) ? Object.entries(getStyleObject(styleVal)).reduce((acc, [key, value]) => acc + key + ":" + value + ";", "") : "";
+	const styleVal = require_util.isFunction(styleValue) ? styleValue() : styleValue;
+	return typeof styleVal === "string" ? styleVal : require_util.isObject(styleVal) ? Object.entries(getStyleObject(styleVal)).reduce((acc, [key, value]) => acc + key + ":" + value + ";", "") : "";
 };
 const style = (target, styleValue) => {
-	const styleVal = require_store.isFunction(styleValue) ? styleValue() : styleValue;
-	const hasReactiveProp = require_store.isObject(styleVal) && Object.values(styleVal).some((sv) => require_store.isFunction(sv));
+	const styleVal = require_util.isFunction(styleValue) ? styleValue() : styleValue;
+	const hasReactiveProp = require_util.isObject(styleVal) && Object.values(styleVal).some((sv) => require_util.isFunction(sv));
 	setAttribute(target, "style", styleToString(styleVal));
-	if (require_store.isFunction(styleValue) || hasReactiveProp) setHydrationKey(target);
+	if (require_util.isFunction(styleValue) || hasReactiveProp) setHydrationKey(target);
 };
 
 //#endregion
@@ -58,19 +58,19 @@ if (typeof document === "undefined") globalThis.document = (0, __thednp_domparse
 const add = (parent, child) => {
 	if (!parent || !child) return;
 	if (child instanceof Promise) child.then((resolved) => add(parent, resolved));
-	else if (require_store.isArray(child)) child.forEach((c) => add(parent, c));
-	else if (require_store.isNode(child)) parent.appendChild(child);
-	else if (require_store.isFunction(child)) {
+	else if (require_util.isArray(child)) child.forEach((c) => add(parent, c));
+	else if (require_util.isNode(child)) parent.appendChild(child);
+	else if (require_util.isFunction(child)) {
 		const textNode = document.createTextNode("");
 		parent.appendChild(textNode);
-		const realChild = require_store.isFunction(child()) ? child() : child;
+		const realChild = require_util.isFunction(child()) ? child() : child;
 		const value = realChild();
-		if (require_store.isArray(value)) {
+		if (require_util.isArray(value)) {
 			parent.textContent = "";
 			value.forEach((v) => add(parent, v));
-		} else if (require_store.isNode(value)) add(parent, child);
-		else textNode.textContent = require_store.getStringValue(value);
-	} else parent.appendChild(document.createTextNode(require_store.getStringValue(child)));
+		} else if (require_util.isNode(value)) add(parent, child);
+		else textNode.textContent = require_util.getStringValue(value);
+	} else parent.appendChild(document.createTextNode(require_util.getStringValue(child)));
 };
 function listen(target, _event, _handler, _options) {
 	setHydrationKey(target);
@@ -78,15 +78,64 @@ function listen(target, _event, _handler, _options) {
 }
 function h(tagName, first, ...children) {
 	const element = document.createElement(tagName);
-	if (require_store.isObject(first) && !require_store.isNode(first) && !require_store.isArray(first)) Object.entries(first).forEach(([key, value]) => {
+	if (require_util.isObject(first) && !require_util.isNode(first) && !require_util.isArray(first)) Object.entries(first).forEach(([key, value]) => {
 		if (key.startsWith("on")) {
-			if (require_store.isFunction(value)) setHydrationKey(element);
+			if (require_util.isFunction(value)) setHydrationKey(element);
 		} else if (key === "style") style(element, value);
 		else setAttribute(element, key, value);
 	});
 	else add(element, first);
 	add(element, children);
 	return element;
+}
+
+//#endregion
+//#region src/ssr/state.ts
+function untrack(fn) {
+	return fn();
+}
+function onMount(fn) {
+	let init = false;
+	if (init) return;
+	init = true;
+	fn();
+	return () => {};
+}
+function signal(value) {
+	value = require_util.isFunction(value) ? value() : value;
+	return [() => value, (nextValue) => {
+		if (require_util.isFunction(nextValue)) value = nextValue(value);
+		else value = nextValue;
+	}];
+}
+function effect(fn) {
+	fn();
+}
+function memo(value) {
+	let v;
+	try {
+		v = value();
+	} catch (err) {
+		console.error(err);
+	}
+	return () => v;
+}
+
+//#endregion
+//#region src/ssr/store.ts
+function createState(obj, parentReceiver) {
+	for (const [key, value] of Object.entries(obj)) if (require_util.isPlainObject(value)) parentReceiver[key] = createState(value, {});
+	else {
+		const [get, set] = signal(value);
+		Object.defineProperty(parentReceiver, key, {
+			get,
+			set
+		});
+	}
+	return parentReceiver;
+}
+function store(init) {
+	return createState(init, {});
 }
 
 //#endregion
@@ -109,10 +158,10 @@ const List = (props) => {
 };
 function Show({ when, children }) {
 	const placeholder = document.createTextNode("");
-	const initialWhen = () => require_store.isFunction(when) ? when() : when;
+	const initialWhen = () => require_util.isFunction(when) ? when() : when;
 	const newNodes = () => {
-		const nodes = require_store.isFunction(children) ? children() : children;
-		return require_store.isArray(nodes) ? nodes : [nodes];
+		const nodes = require_util.isFunction(children) ? children() : children;
+		return require_util.isArray(nodes) ? nodes : [nodes];
 	};
 	const Layout = () => {
 		const condition = initialWhen();
@@ -184,18 +233,18 @@ function renderPreloadLinks(modules, manifest) {
 exports.List = List;
 exports.Show = Show;
 exports.add = add;
-exports.effect = require_store.effect;
+exports.effect = effect;
 exports.getStyleObject = getStyleObject;
 exports.h = h;
 exports.listen = listen;
-exports.memo = require_store.memo;
-exports.onMount = require_store.onMount;
+exports.memo = memo;
+exports.onMount = onMount;
 exports.renderPreloadLinks = renderPreloadLinks;
 exports.setAttribute = setAttribute;
 exports.setHydrationKey = setHydrationKey;
-exports.signal = require_store.signal;
-exports.store = require_store.store;
+exports.signal = signal;
+exports.store = store;
 exports.style = style;
 exports.styleToString = styleToString;
-exports.untrack = require_store.untrack;
+exports.untrack = untrack;
 //# sourceMappingURL=ssr.cjs.map

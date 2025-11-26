@@ -1,5 +1,5 @@
 // todo.ts
-import { createElement, store } from "../framework";
+import { h, store } from "pakframe";
 
 // Define the todo item type
 interface Todo {
@@ -41,7 +41,7 @@ function clearCompleted() {
 // Todo list component
 export function TodoApp() {
   // Input for new todos
-  const input = createElement("input", {
+  const input = h("input", {
     type: "text",
     name: "todo-input",
     "aria-label": "Add a new todo here",
@@ -58,25 +58,25 @@ export function TodoApp() {
   });
 
   // Filter buttons
-  const allFilter = createElement("button", {
+  const allFilter = h("button", {
     class: () => todos.filter === "all" ? "active" : "",
     onclick: () => {
       todos.filter = "all";
     },
   }, "All");
-  const activeFilter = createElement("button", {
+  const activeFilter = h("button", {
     class: () => todos.filter === "active" ? "active" : "",
     onclick: () => {
       todos.filter = "active";
     },
   }, "Active");
-  const completedFilter = createElement("button", {
+  const completedFilter = h("button", {
     class: () => todos.filter === "completed" ? "active" : "",
     onclick: () => {
       todos.filter = "completed";
     },
   }, "Completed");
-  const clearCompletedButton = createElement("button", {
+  const clearCompletedButton = h("button", {
     onclick: clearCompleted,
   }, "Clear Completed");
 
@@ -90,13 +90,13 @@ export function TodoApp() {
     );
 
     return filtered.map(todo => 
-      createElement("li", 
-        createElement("label",
+      h("li", 
+        h("label",
           {
             // style: () => todo.done ? "text-decoration: line-through;" : "",
             style: () => todo.done ? ({ "text-decoration": "line-through;" }) : null,
           },
-          createElement("input", {
+          h("input", {
             type: "checkbox",
             id: () => `checkbox-${todo.id}`,
             checked: () => todo.done,
@@ -109,11 +109,11 @@ export function TodoApp() {
   };
 
   // Todo list rendering
-  // const todoList = createElement("ul", todoItems());
-  const todoList = createElement("ul", todoItems);
+  // const todoList = h("ul", todoItems());
+  const todoList = h("ul", todoItems);
 
   // Remaining todos count
-  const remaining = createElement(
+  const remaining = h(
     "p",
     () =>
       `${todos.items.filter((t) => !t.done).length} item${
@@ -121,12 +121,12 @@ export function TodoApp() {
       } remaining`,
   );
 
-  return createElement(
+  return h(
     "div",
-    createElement("h1", "Todo List"),
+    h("h1", "Todo List"),
     input,
     todoList,
-    createElement(
+    h(
       "div",
       allFilter,
       activeFilter,

@@ -1,5 +1,6 @@
 // router/state.js
-import { store } from "../ssr/store";
+// import { store } from "../ssr/store";
+import { store } from "@core";
 import { isServer } from "../util";
 
 /**

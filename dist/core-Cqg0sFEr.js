@@ -1,4 +1,4 @@
-import { getStringValue, isArray, isFunction, isNode, isObject, isPlainObject, isServer, isString, needsEncoding, store, urlAttributes } from "./store-JUSkKPgE.js";
+import { getStringValue, isArray, isFunction, isNode, isObject, isPlainObject, isServer, isString, needsEncoding, urlAttributes } from "./util-B_frEJmo.js";
 import { escape } from "@thednp/domparser";
 
 //#region src/core/state.ts
@@ -347,7 +347,8 @@ const isLazyComponent = (component) => {
 /**
 * Execute lifecycle methods preload and / or load
 */
-const executeLifecycle = async ({ route }, params) => {
+const executeLifecycle = async (module, params) => {
+	const { route } = module instanceof Promise ? await module : module;
 	// istanbul ignore next
 	if (!route) return true;
 	try {
@@ -767,18 +768,17 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				// istanbul ignore next - cannot test
 				const cp = Array.isArray(module) || module instanceof Element ? module : typeof module.component === "function" ? module.component() : module.component;
 				// istanbul ignore next - cannot test
-				const kids = () => cp ? Array.from(unwrap(cp).children) : [];
-				const kudos = kids();
 				isConnected = true;
 				// istanbul ignore else
 				if (document.head) hydrate(document.head, Head());
-				return kudos;
+				return cp ? Array.from(unwrap(cp).children) : [];
 			};
+			const finalChildren = children$1();
 			console.log("Router", {
 				root,
-				children: children$1
+				finalChildren
 			});
-			add(wrapper, children$1());
+			add(wrapper, finalChildren);
 			return wrapper;
 		}
 		const csrRoute = memo(() => {
@@ -789,10 +789,10 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 			const route$1 = csrRoute();
 			// istanbul ignore if - can only be tested in client
 			if (!route$1) return [h("div", "No Route Found")];
-			const md = route$1.component();
-			executeLifecycle(md, route$1.params);
+			const module = route$1.component();
+			executeLifecycle(module, route$1.params);
 			// istanbul ignore next - cannot test all cases
-			const cp = Array.isArray(md) || md instanceof Element ? md : typeof md.component === "function" ? md.component() : md.component;
+			const cp = Array.isArray(module) || module instanceof Element ? module : typeof module.component === "function" ? module.component() : module.component;
 			return cp ? Array.from(unwrap(cp).children) : [];
 		};
 		effect(() => {
@@ -802,8 +802,8 @@ const Router = (initialProps = (/* istanbul ignore next */ {})) => {
 				kudos,
 				isConnected
 			});
+			// istanbul ignore else
 			if (isConnected) add(wrapper, kudos);
-			else wrapper.remove();
 			isConnected = true;
 			// istanbul ignore else
 			if (document.head) hydrate(document.head, Head());
@@ -821,17 +821,20 @@ const isTag = (target, ...tagNames) => {
 const hasHydrationKeys = (target) => {
 	return target.querySelector("[data-hk]") !== void 0;
 };
+const hydrateAction = (target, resolvedContent) => {
+	if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+	else {
+		const wrapper = unwrap(resolvedContent);
+		target.replaceChildren(...Array.from(wrapper.children));
+	}
+};
 /**
 * Hydrate a target element
 */
 const hydrate = (target, content) => {
 	if (content instanceof Promise) {
-		content.then((res) => {
-			if (!target.hasAttribute("data-h")) hydrate(target, res);
-			else {
-				const wrapper$1 = unwrap(res);
-				target.replaceChildren(...Array.from(wrapper$1.children));
-			}
+		content.then((resolvedContent) => {
+			hydrateAction(target, resolvedContent);
 		});
 		return target;
 	}
@@ -842,11 +845,7 @@ const hydrate = (target, content) => {
 				isFunction: isFunction(content),
 				resolvedContent
 			});
-			if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
-			else {
-				const wrapper$1 = unwrap(resolvedContent);
-				target.replaceChildren(...Array.from(wrapper$1.children));
-			}
+			hydrateAction(target, resolvedContent);
 		});
 		return target;
 	}
@@ -972,7 +971,7 @@ function createState(obj, parentReceiver) {
 	}
 	return parentReceiver;
 }
-function store$1(init) {
+function store(init) {
 	return createState(init, {});
 }
 
@@ -1029,5 +1028,5 @@ function Show({ when, children }) {
 }
 
 //#endregion
-export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store$1 as store, style, styleToString, untrack, unwrap };
-//# sourceMappingURL=core-bdjsZuZz.js.map
+export { A, Head, Link, List, Meta, Route, Router, Script, Show, Style, Title, add, addMeta, cache, createDomElement, effect, executeLifecycle, extractParams, fixRouteUrl, getCached, getStyleObject, getTagKey, h, hydrate, initializeHeadTags, isCurrentPage, isLazyComponent, lazy, listen, memo, navigate, onMount, parseAttributes, resetHeadTags, routerState, routes, setAttribute, setRouterState, signal, store, style, styleToString, untrack, unwrap };
+//# sourceMappingURL=core-Cqg0sFEr.js.map

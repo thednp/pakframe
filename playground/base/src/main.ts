@@ -3,9 +3,9 @@ import { Counter, count } from "./components/counter";
 import { TodoApp } from "./components/todo";
 import { Article } from "./components/article";
 import { hydrate, add, effect, h, signal, type MaybeChildNode } from "pakframe";
-// import { Router } from "pakframe/router";
+import { Router } from "pakframe/router";
 
-function App() {
+function App_() {
   const ViteLink = h(
     "a",
     { href: "https://vite.dev", target: "_blank" },
@@ -68,9 +68,9 @@ function App() {
   );
 }
 
-// function App() {
-//   return Router()
-// }
+function App() {
+  return Router()
+}
 
 
 add(document.getElementById("app")!, App());

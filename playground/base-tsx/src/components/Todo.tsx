@@ -48,7 +48,7 @@ const filteredTodos = memo(() =>
       : todos.filter === "active"
       ? !todo.done
       : todo.done,
-  )
+  ) as Todo[]
 )
 
 export const TodoApp = () => {
@@ -71,7 +71,7 @@ export const TodoApp = () => {
         }}
       />
 
-      <List each={filteredTodos} as="div" class={"red"}>
+      <List each={filteredTodos}>
         {todo => (
           <div>
             <label style={{ textDecoration: () => todo.done ? "line-through" : "" }}>

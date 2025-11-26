@@ -215,15 +215,10 @@ declare const Router: (initialProps?: {}) => any;
  * Fix the URL of a route
  */
 declare const fixRouteUrl: (url?: string) => string;
-type RouterState$1 = {
-  pathname: string;
-  searchParams: URLSearchParams;
-  params: Record<string, string>;
-};
 /**
  * The global router state.
  */
-declare const routerState: RouterState$1;
+declare const routerState: any;
 /** */
 declare const setRouterState: (path: string, search?: string, params?: Record<string, string>) => void;
 //#endregion
@@ -272,9 +267,7 @@ declare const isLazyComponent: (component: ComponentFn | (() => LazyComponent)) 
 /**
  * Execute lifecycle methods preload and / or load
  */
-declare const executeLifecycle: ({
-  route
-}: ComponentModule, params?: Record<string, string>) => Promise<boolean>;
+declare const executeLifecycle: (module: ComponentModule | Promise<ComponentModule>, params?: Record<string, string>) => Promise<boolean>;
 /**
  * Client only reload utility
  * WORK IN PROGRESS

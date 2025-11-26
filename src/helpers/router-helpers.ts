@@ -32,9 +32,10 @@ export const isLazyComponent = (
  * Execute lifecycle methods preload and / or load
  */
 export const executeLifecycle = async (
-  { route }: ComponentModule,
+  module: ComponentModule | Promise<ComponentModule>,
   params?: Record<string, string>,
 ): Promise<boolean> => {
+  const { route } = module instanceof Promise ? await module : module; 
   // istanbul ignore next
   if (!route) return true;
   try {

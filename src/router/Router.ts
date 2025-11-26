@@ -5,9 +5,9 @@ import { routerState, setRouterState } from "./state";
 import { matchRoute } from "./matchRoute";
 import { executeLifecycle } from "../helpers/router-helpers";
 import { unwrap } from "./unwrap";
-import { hydrate } from "../core/hydrate";
+import { hydrate } from "@core";
 import { Head, initializeHeadTags } from "../meta";
-import type { ComponentModule } from "@router";
+import type { ComponentFn, ComponentModule } from "./types";
 
 let isConnected = false;
 
@@ -78,12 +78,12 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
         // istanbul ignore next - cannot test
         const cp = (Array.isArray(module) || module instanceof Element)
           ? module as DOMElement[]
-          : typeof module.component === "function"
-          ? module.component()
-          : module.component;
+          : typeof (module as unknown as ComponentModule).component === "function"
+            ? (module as unknown as ComponentModule & { component: ComponentFn }).component()
+            : (module as unknown as ComponentModule).component;
         // istanbul ignore next - cannot test
-        const kids = () => cp ? Array.from(unwrap(cp).children) : [];
-        const kudos = kids();
+        // const kids = () => cp ? Array.from(unwrap(cp).children) : [];
+        // const kudos = kids();
 
         isConnected = true;
         // istanbul ignore else
@@ -91,12 +91,14 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
           hydrate(document.head, Head());
         }
 
-        return kudos;
+        return cp ? Array.from(unwrap(cp).children) : [];
       };
 
-      console.log("Router", { root, children })
+      const finalChildren = children();
 
-      add(wrapper, children() as MaybeChildNode[]);
+      console.log("Router", { root, finalChildren })
+
+      add(wrapper, finalChildren as MaybeChildNode[]);
       return wrapper;
     }
     // this case is when root is for SPA apps
@@ -109,33 +111,33 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
       const route = csrRoute();
       // istanbul ignore if - can only be tested in client
       if (!route) return [h("div", "No Route Found")];
-      const md = route.component();
-      executeLifecycle(md, route.params);
+      const module = route.component();
+      executeLifecycle(module, route.params);
       // istanbul ignore next - cannot test all cases
-      const cp = (Array.isArray(md) || md instanceof Element)
-        ? md
-        : typeof md.component === "function"
-        ? md.component()
-        : md.component;
+      const cp = (Array.isArray(module) || module instanceof Element)
+        ? module as DOMElement[]
+        : typeof (module as unknown as ComponentModule).component === "function"
+          ? (module as unknown as ComponentModule & { component: ComponentFn }).component()
+          : (module as unknown as ComponentModule).component;
       return cp
         ? Array.from(unwrap(cp).children)
-        : /* istanbul ignore next */ [];
+        : /* istanbul ignore next */[];
     };
 
-		effect(() => {
-			const kudos = children();
-			console.log({
-				wrapper,
-				kudos,
-				isConnected
-			});
-			if (isConnected) add(wrapper, kudos as MaybeChildNode[]);
-			else wrapper.remove();
+    effect(() => {
+      const kudos = children();
+      console.log({
+        wrapper,
+        kudos,
+        isConnected
+      });
+      // istanbul ignore else
+      if (isConnected) add(wrapper, kudos as MaybeChildNode[]);
 
-			isConnected = true;
-			// istanbul ignore else
-			if (document.head) hydrate(document.head, Head());
-		})
+      isConnected = true;
+      // istanbul ignore else
+      if (document.head) hydrate(document.head, Head());
+    })
 
     return wrapper;
   };

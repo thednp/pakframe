@@ -8,7 +8,7 @@ const main = document.getElementById("main") as HTMLElement;
 // const header = document.getElementById("app-header") as HTMLElement;
 // const footer = document.getElementById("app-footer") as HTMLElement;
 
-console.log("App()", App())
+// console.log("App()", App())
 
 // add(main, () => App())
 hydrate(main, App)
