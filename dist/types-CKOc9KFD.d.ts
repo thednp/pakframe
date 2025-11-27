@@ -410,9 +410,9 @@ declare module "@meta" {
 }
 //#endregion
 //#region src/types/types.d.ts
-interface ContextEntry {
+interface StateEntry {
   execute: () => void;
-  dependencies: Set<Set<ContextEntry>>;
+  dependencies: Set<Set<StateEntry>>;
   cleanup?: () => void;
 }
 type Accessor<T> = () => T;
@@ -455,6 +455,19 @@ interface ChildArray extends Array<MaybeChildNode> {}
 interface ChildAccessor {
   (): MaybeChildNode;
 }
+interface Owner {
+  context: Map<symbol, unknown>;
+  parent: Owner | null;
+}
+interface ProviderProps {
+  value: T;
+  children: () => MaybeChildNode;
+}
+type Context<T> = {
+  symbol: symbol;
+  defaultValue?: T;
+  Provider: (p: ProviderProps) => MaybeChildNode;
+};
 //#endregion
-export { Accessor, AllCSSProperties, CSSProperties, ChildAccessor, ChildArray, ContextEntry, DOMElement, DOMNodeAttributes, DOMTagNameMap, FNObject, FunctionMaybe, type MathMLElementTags, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, Primitive, PropValue, PropValueOrAccessor, PropsWithKnownKeys, Setter, StoreObject, StoreValue, TagNames };
-//# sourceMappingURL=types-BZyJRwNQ.d.ts.map
+export { Accessor, AllCSSProperties, CSSProperties, ChildAccessor, ChildArray, Context, DOMElement, DOMNodeAttributes, DOMTagNameMap, FNObject, FunctionMaybe, type MathMLElementTags, MaybeChildNode, ObserverFn, OutputElement, Owner, PotentialProps, Primitive, PropValue, PropValueOrAccessor, PropsWithKnownKeys, ProviderProps, Setter, StateEntry, StoreObject, StoreValue, TagNames };
+//# sourceMappingURL=types-CKOc9KFD.d.ts.map

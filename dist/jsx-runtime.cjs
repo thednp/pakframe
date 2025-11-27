@@ -1,5 +1,5 @@
-require('./core-CfqC-T4D.cjs');
-const require_jsx = require('./jsx-D6Warj5O.cjs');
+require('./core-CBmu30RC.cjs');
+const require_jsx = require('./jsx-COZ5JI-w.cjs');
 
 exports.Fragment = require_jsx.Fragment;
 exports.createElement = require_jsx.jsx;

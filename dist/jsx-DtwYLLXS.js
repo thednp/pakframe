@@ -1,14 +1,14 @@
-import { effect, h, isFunction, isServer, setAttribute, style } from "./core-Dnj3owAD.js";
+import { effect, h, isFunction, isServer, setAttribute, style } from "./core-B3fYpSzJ.js";
 
 //#region src/jsx/jsx.ts
 const jsx = (jsxTag, { children, style: style$1,...rest }) => {
 	if (typeof jsxTag === "string") {
 		const element = h(jsxTag, rest, children);
-		rest.ref = element;
 		effect(() => {
 			style(element, style$1);
 		});
 		for (const [key, value] of Object.entries(rest)) {
+			if (key === "ref") continue;
 			if (key.startsWith("on") && !isServer) {
 				const eventName = key.slice(2).toLowerCase();
 				element.addEventListener(eventName, value);
@@ -34,4 +34,4 @@ const Fragment = ({ children }) => children;
 
 //#endregion
 export { Fragment, jsx };
-//# sourceMappingURL=jsx-atgl1ulG.js.map
+//# sourceMappingURL=jsx-DtwYLLXS.js.map

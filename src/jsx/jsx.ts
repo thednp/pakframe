@@ -20,16 +20,24 @@ const jsx = <K extends TagNames>(
       rest as DOMNodeAttributes<PotentialProps<K>, K>,
       children as MaybeChildNode,
     );
+    // const elemRef = () => rest.ref;
 
     // if (isFunction(ref)) ref(element);
     // else ref = element;
-    rest.ref = element as ComponentProps<K>["ref"];
+    // rest.ref = element as ComponentProps<K>["ref"];
 
     effect(() => {
       setStyle(element, style);
     });
+    // effect(() => {
+    //   const currentRef = elemRef();
+    //   rest.ref = element as ComponentProps<K>["ref"];
+    // })
 
     for (const [key, value] of Object.entries(rest)) {
+      if (key === "ref") {
+        continue;
+      }
       if (key.startsWith("on") && !isServer) {
         const eventName = key.slice(2)
           .toLowerCase() as keyof HTMLElementEventMap;

@@ -1,13 +1,13 @@
 require("virtual:@pakframe/routes");
-const require_core = require('./core-CfqC-T4D.cjs');
+const require_core = require('./core-CBmu30RC.cjs');
 
 exports.CONTEXT_OWNER = require_core.CONTEXT_OWNER;
 exports.List = require_core.List;
 exports.Show = require_core.Show;
 exports.add = require_core.add;
-exports.createComponent = require_core.createComponent;
 exports.createContext = require_core.createContext;
 exports.createDomElement = require_core.createDomElement;
+exports.createOwner = require_core.createOwner;
 exports.effect = require_core.effect;
 exports.getOwner = require_core.getOwner;
 exports.getStyleObject = require_core.getStyleObject;

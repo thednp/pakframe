@@ -1,6 +1,5 @@
-import { ChildAccessor, ChildArray, DOMElement, DOMNodeAttributes, DOMTagNameMap, FunctionMaybe, MaybeChildNode } from "./types-BLmU6ozM.cjs";
-import "./context-DDboIKXk.cjs";
-import "./index-BYVVqL82.cjs";
+import { ChildAccessor, ChildArray, DOMElement, DOMNodeAttributes, DOMTagNameMap, FunctionMaybe, MaybeChildNode } from "./types-DVZQe0sT.cjs";
+import "./index-CY-MQML5.cjs";
 
 //#region src/router/types.d.ts
 
@@ -235,7 +234,7 @@ declare const navigate: (path: string, options?: {
 /**
  * Registers a lazy component.
  */
-declare const lazy: (importFn: ImportFn) => (() => Promise<ComponentModule>) | LazyComponent;
+declare const lazy: (importFn: ImportFn) => LazyComponent | (() => Promise<ComponentModule>);
 //#endregion
 //#region src/router/cache.d.ts
 declare const getCached: (key: ImportFn) => ComponentModule | undefined;

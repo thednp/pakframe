@@ -1,4 +1,4 @@
-const require_core = require('./core-CfqC-T4D.cjs');
+const require_core = require('./core-CBmu30RC.cjs');
 
 exports.Head = require_core.Head;
 exports.Link = require_core.Link;

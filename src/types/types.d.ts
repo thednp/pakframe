@@ -8,9 +8,9 @@ import type { MathMLElementTags } from "./MathML";
 import "./global";
 export type { MathMLElementTags };
 
-export interface ContextEntry {
+export interface StateEntry {
   execute: () => void;
-  dependencies: Set<Set<ContextEntry>>;
+  dependencies: Set<Set<StateEntry>>;
   cleanup?: () => void;
 }
 
@@ -57,11 +57,11 @@ export type CSSProperties = {
 
 export interface DOMTagNameMap
   extends
-    HTMLElementTagNameMap,
-    HTMLElementDeprecatedTagNameMap,
-    Omit<SVGElementTagNameMap, "a" | "title" | "style" | "script">,
-    // MathMLElementTags { };
-    MathMLElementTagNameMap {}
+  HTMLElementTagNameMap,
+  HTMLElementDeprecatedTagNameMap,
+  Omit<SVGElementTagNameMap, "a" | "title" | "style" | "script">,
+  // MathMLElementTags { };
+  MathMLElementTagNameMap { }
 
 export type TagNames = keyof DOMTagNameMap;
 export type OutputElement<K extends TagNames> = K extends
@@ -90,7 +90,23 @@ export type MaybeChildNode =
   | ChildAccessor
   | (string & {});
 
-export interface ChildArray extends Array<MaybeChildNode> {}
+export interface ChildArray extends Array<MaybeChildNode> { }
 export interface ChildAccessor {
   (): MaybeChildNode;
 }
+
+export interface Owner {
+  context: Map<symbol, unknown>;
+  parent: Owner | null;
+}
+
+export interface ProviderProps {
+  value: T;
+  children: () => MaybeChildNode;
+}
+
+export type Context<T> = {
+  symbol: symbol,
+  defaultValue?: T,
+  Provider: (p: ProviderProps) => MaybeChildNode,
+};

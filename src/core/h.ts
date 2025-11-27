@@ -1,5 +1,5 @@
 // src/h.ts
-import { effect, untrack, createComponent } from "@core";
+import { effect, untrack } from "@core";
 import { setAttribute, style } from "./attr";
 import { namespaceElements } from "./ns";
 import type {
@@ -35,6 +35,8 @@ export const add = (
   } else if (isFunction(child)) {
     const textNode = document.createTextNode("");
     parent.appendChild(textNode);
+
+    // TO DO, check if effect can be skipped
     const realChild = (isFunction(untrack(child as Accessor<Accessor<unknown>>))
       ? untrack(child as Accessor<Accessor<unknown>>)
       : child) as Accessor<
@@ -87,12 +89,20 @@ export function h<K extends TagNames>(
   first?: MaybeChildNode | DOMNodeAttributes<PotentialProps<K>, K>,
   ...children: MaybeChildNode[]
 ): OutputElement<K> {
-  return createComponent(() => {
     const element = createDomElement(tagName);
+    console.log("h", { element });
 
     // Handle props if first is an object and not a Node
     if (isObject(first) && !isNode(first) && !isArray(first)) {
+      (first as DOMNodeAttributes<PotentialProps<K>, K>).ref = element;
+      // const { ref, ...rest } = first as DOMNodeAttributes<PotentialProps<K>, K>;
+      // let elemRef = (first as DOMNodeAttributes<PotentialProps<K>, K>).ref;
+
+      // console.log({ ref, rest })
+
+      // elemRef = element;
       Object.entries(first).forEach(([key, value]) => {
+        const elemRef = () => (first as DOMNodeAttributes<PotentialProps<K>, K>).ref;
         if (key.startsWith("on")) {
           if (typeof value !== "function") {
             return;
@@ -103,8 +113,15 @@ export function h<K extends TagNames>(
         } else if (key === "style") {
           effect(() => style(element, value));
         } else if (key === "ref") {
-          // (first as DOMNodeAttributes<PotentialProps<K>, K>).ref = element;
-          value = element;
+          effect(() => {
+            const currentRef = elemRef();
+
+            console.log({ key, value, currentRef });
+            // don't do anything for now
+            (first as DOMNodeAttributes<PotentialProps<K>, K>).ref = element;
+  
+            // value = element;
+          });
         } else {
           effect(() => setAttribute(element, key, value));
         }
@@ -116,5 +133,4 @@ export function h<K extends TagNames>(
     add(element, children);
 
     return element;
-  }, {})
 }

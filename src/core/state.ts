@@ -2,20 +2,20 @@
 import { isFunction } from "../util";
 import type {
   Accessor,
-  ContextEntry,
+  StateEntry,
   ObserverFn,
   Setter,
 } from "../types/types";
 
-let context: ContextEntry[] = [];
+let context: StateEntry[] = [];
 
-function subscribe(running: ContextEntry, subscriptions: Set<ContextEntry>) {
+function subscribe(running: StateEntry, subscriptions: Set<StateEntry>) {
   subscriptions.add(running);
   running.dependencies.add(subscriptions);
 }
 
 // Clear dependencies
-function cleanup(running: ContextEntry) {
+function cleanup(running: StateEntry) {
   for (const dep of running.dependencies) {
     dep.delete(running);
   }
@@ -43,7 +43,7 @@ export function onMount(fn: () => void) {
 
 export function signal<T>(value: T) {
   value = isFunction(value) ? value() : value;
-  const subscriptions = new Set<ContextEntry>();
+  const subscriptions = new Set<StateEntry>();
 
   return [
     () => {
@@ -70,7 +70,7 @@ export function signal<T>(value: T) {
 }
 
 export function effect(fn: ObserverFn) {
-  let running: ContextEntry;
+  let running: StateEntry;
   const execute = () => {
     cleanup(running);
     context.push(running);

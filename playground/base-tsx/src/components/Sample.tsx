@@ -8,7 +8,7 @@ export const Sample = () => {
 
   effect(() => {
     const currentColor = getTheme();
-    console.log({ currentColor })
+    console.log("Sample", { currentColor })
   });
 
   return (

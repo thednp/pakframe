@@ -1,4 +1,4 @@
-import { Accessor, CSSProperties, DOMElement, DOMNodeAttributes, FunctionMaybe, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, PropValueOrAccessor, Setter, StoreObject, TagNames } from "./types-BZyJRwNQ.js";
+import { Accessor, CSSProperties, DOMElement, DOMNodeAttributes, FunctionMaybe, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, PropValueOrAccessor, Setter, StoreObject, TagNames } from "./types-CKOc9KFD.js";
 
 //#region src/ssr/h.d.ts
 declare const add: (parent: DOMElement, child?: FunctionMaybe<RegExp | Date> | Accessor<MaybeChildNode> | MaybeChildNode | Promise<MaybeChildNode>) => void;
@@ -36,7 +36,7 @@ type ListProps<T> = {
   each?: () => T[];
   children?: (item: T) => MaybeChildNode;
 };
-declare const List: <T>(props: ListProps<T>) => (SVGElement | MathMLElement)[] | undefined;
+declare const List: <T>(props: ListProps<T>) => DOMElement[] | undefined;
 declare function Show<T>({
   when,
   children
@@ -57,4 +57,4 @@ declare const renderWithContext: <T>(fn: () => T) => T;
 declare function renderPreloadLinks(modules: string[], manifest: Record<string, string[]>): string;
 //#endregion
 export { List, ListProps, Show, add, effect, getStyleObject, h, listen, memo, onMount, renderPreloadLinks, renderWithContext, resetOwner, setAttribute, setHydrationKey, signal, store, style, styleToString, untrack };
-//# sourceMappingURL=index-QgiONuiV.d.ts.map
+//# sourceMappingURL=index-CInqgs5d.d.ts.map

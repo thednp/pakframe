@@ -267,21 +267,31 @@ function listen(target, event, handler, options) {
 	target.addEventListener(event, handler, options);
 }
 function h(tagName, first, ...children) {
-	return createComponent(() => {
-		const element = createDomElement(tagName);
-		if (isObject(first) && !isNode(first) && !isArray(first)) Object.entries(first).forEach(([key, value]) => {
+	const element = createDomElement(tagName);
+	console.log("h", { element });
+	if (isObject(first) && !isNode(first) && !isArray(first)) {
+		first.ref = element;
+		Object.entries(first).forEach(([key, value]) => {
+			const elemRef = () => first.ref;
 			if (key.startsWith("on")) {
 				if (typeof value !== "function") return;
 				const eventName = key.slice(2).toLowerCase();
 				listen(element, eventName, value);
 			} else if (key === "style") effect(() => style(element, value));
-			else if (key === "ref") value = element;
+			else if (key === "ref") effect(() => {
+				const currentRef = elemRef();
+				console.log({
+					key,
+					value,
+					currentRef
+				});
+				first.ref = element;
+			});
 			else effect(() => setAttribute(element, key, value));
 		});
-		else add(element, first);
-		add(element, children);
-		return element;
-	}, {});
+	} else add(element, first);
+	add(element, children);
+	return element;
 }
 
 //#endregion
@@ -904,9 +914,12 @@ const runWithOwner = (owner, fn) => {
 const getOwner = () => CONTEXT_OWNER.current;
 const createContext = (defaultValue) => {
 	const contextSymbol = Symbol("context");
-	const Provider = (props, ...otherChildren) => {
-		provide(contextSymbol, props.value);
-		return props.children || otherChildren;
+	const Provider = (props) => {
+		const owner = createOwner(CONTEXT_OWNER.current);
+		owner.context.set(contextSymbol, props.value);
+		const children = runWithOwner(owner, props.children);
+		CONTEXT_OWNER.current = null;
+		return children;
 	};
 	return {
 		symbol: contextSymbol,
@@ -923,15 +936,15 @@ const provide = (contextSymbol, value) => {
 };
 const useContext = (context$1) => {
 	let owner = CONTEXT_OWNER.current;
+	if (!owner) {
+		console.warn("useContext() called outside of component scope");
+		return context$1.defaultValue;
+	}
 	while (owner) {
 		if (owner.context.has(context$1.symbol)) return owner.context.get(context$1.symbol);
 		owner = owner.parent;
 	}
 	return context$1.defaultValue;
-};
-const createComponent = (fn, props) => {
-	const owner = createOwner(CONTEXT_OWNER.current);
-	return runWithOwner(owner, () => fn(props));
 };
 
 //#endregion
@@ -1214,12 +1227,6 @@ Object.defineProperty(exports, 'cache', {
     return cache;
   }
 });
-Object.defineProperty(exports, 'createComponent', {
-  enumerable: true,
-  get: function () {
-    return createComponent;
-  }
-});
 Object.defineProperty(exports, 'createContext', {
   enumerable: true,
   get: function () {
@@ -1230,6 +1237,12 @@ Object.defineProperty(exports, 'createDomElement', {
   enumerable: true,
   get: function () {
     return createDomElement;
+  }
+});
+Object.defineProperty(exports, 'createOwner', {
+  enumerable: true,
+  get: function () {
+    return createOwner;
   }
 });
 Object.defineProperty(exports, 'effect', {
@@ -1484,4 +1497,4 @@ Object.defineProperty(exports, 'useContext', {
     return useContext;
   }
 });
-//# sourceMappingURL=core-CfqC-T4D.cjs.map
+//# sourceMappingURL=core-CBmu30RC.cjs.map

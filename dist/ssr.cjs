@@ -1,6 +1,6 @@
 require("virtual:@pakframe/routes");
 const require_chunk = require('./chunk-CUT6urMc.cjs');
-const require_core = require('./core-CfqC-T4D.cjs');
+const require_core = require('./core-CBmu30RC.cjs');
 const __thednp_domparser = require_chunk.__toESM(require("@thednp/domparser"));
 const node_path = require_chunk.__toESM(require("node:path"));
 
@@ -77,18 +77,16 @@ function listen(target, _event, _handler, _options) {
 	return true;
 }
 function h(tagName, first, ...children) {
-	return require_core.createComponent(() => {
-		const element = document.createElement(tagName);
-		if (require_core.isObject(first) && !require_core.isNode(first) && !require_core.isArray(first)) Object.entries(first).forEach(([key, value]) => {
-			if (key.startsWith("on")) {
-				if (require_core.isFunction(value)) setHydrationKey(element);
-			} else if (key === "style") style(element, value);
-			else setAttribute(element, key, value);
-		});
-		else add(element, first);
-		add(element, children);
-		return element;
-	}, {});
+	const element = document.createElement(tagName);
+	if (require_core.isObject(first) && !require_core.isNode(first) && !require_core.isArray(first)) Object.entries(first).forEach(([key, value]) => {
+		if (key.startsWith("on")) {
+			if (require_core.isFunction(value)) setHydrationKey(element);
+		} else if (key === "style") style(element, value);
+		else setAttribute(element, key, value);
+	});
+	else add(element, first);
+	add(element, children);
+	return element;
 }
 
 //#endregion
@@ -246,8 +244,8 @@ exports.CONTEXT_OWNER = require_core.CONTEXT_OWNER;
 exports.List = List;
 exports.Show = Show;
 exports.add = add;
-exports.createComponent = require_core.createComponent;
 exports.createContext = require_core.createContext;
+exports.createOwner = require_core.createOwner;
 exports.effect = effect;
 exports.getOwner = require_core.getOwner;
 exports.getStyleObject = getStyleObject;
