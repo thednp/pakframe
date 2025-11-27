@@ -1,4 +1,5 @@
-import { Accessor, AllCSSProperties, CSSProperties, ChildAccessor, ChildArray, ContextEntry, DOMElement, DOMNodeAttributes, DOMTagNameMap, FNObject, FunctionMaybe, MathMLElementTags, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, Primitive, PropValue, PropValueOrAccessor, PropsWithKnownKeys, Setter, StoreObject, StoreValue, TagNames } from "./types-pzt1ZtaD.js";
+import { Accessor, AllCSSProperties, CSSProperties, ChildAccessor, ChildArray, ContextEntry, DOMElement, DOMNodeAttributes, DOMTagNameMap, FNObject, FunctionMaybe, MathMLElementTags, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, Primitive, PropValue, PropValueOrAccessor, PropsWithKnownKeys, Setter, StoreObject, StoreValue, TagNames } from "./types-BZyJRwNQ.js";
+import { CONTEXT_OWNER, createComponent, createContext, getOwner, provide, runWithOwner, useContext } from "./context-DGy6Ioju.js";
 
 //#region src/core/h.d.ts
 declare const add: (parent: DOMElement, child?: FunctionMaybe<RegExp | Date> | Accessor<MaybeChildNode> | MaybeChildNode | Promise<MaybeChildNode>) => void;
@@ -51,5 +52,5 @@ declare const getStyleObject: <T extends CSSProperties>(styleObject: T) => T;
 declare const styleToString: (styleValue?: FunctionMaybe<CSSProperties | string | null | undefined>) => string;
 declare const style: (target: DOMElement, styleValue?: FunctionMaybe<CSSProperties | string | null | undefined>) => void;
 //#endregion
-export { Accessor, AllCSSProperties, CSSProperties, ChildAccessor, ChildArray, ContextEntry, DOMElement, DOMNodeAttributes, DOMTagNameMap, FNObject, FunctionMaybe, List, ListProps, MathMLElementTags, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, Primitive, PropValue, PropValueOrAccessor, PropsWithKnownKeys, Setter, Show, StoreObject, StoreValue, TagNames, add, createDomElement, effect, getStyleObject, h, hydrate, listen, memo, onMount, setAttribute, signal, store, style, styleToString, untrack };
+export { Accessor, AllCSSProperties, CONTEXT_OWNER, CSSProperties, ChildAccessor, ChildArray, ContextEntry, DOMElement, DOMNodeAttributes, DOMTagNameMap, FNObject, FunctionMaybe, List, ListProps, MathMLElementTags, MaybeChildNode, ObserverFn, OutputElement, PotentialProps, Primitive, PropValue, PropValueOrAccessor, PropsWithKnownKeys, Setter, Show, StoreObject, StoreValue, TagNames, add, createComponent, createContext, createDomElement, effect, getOwner, getStyleObject, h, hydrate, listen, memo, onMount, provide, runWithOwner, setAttribute, signal, store, style, styleToString, untrack, useContext };
 //# sourceMappingURL=index.d.ts.map

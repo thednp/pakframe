@@ -12,7 +12,7 @@ import type { Component, ComponentProps, JSX } from "./types";
 
 const jsx = <K extends TagNames>(
   jsxTag: K | Component<K>,
-  { children, ref, style, ...rest }: ComponentProps<K>,
+  { children, /*ref,*/ style, ...rest }: ComponentProps<K>,
 ) => {
   if (typeof jsxTag === "string") {
     const element = h(
@@ -21,8 +21,9 @@ const jsx = <K extends TagNames>(
       children as MaybeChildNode,
     );
 
-    if (isFunction(ref)) ref(element);
+    // if (isFunction(ref)) ref(element);
     // else ref = element;
+    rest.ref = element as ComponentProps<K>["ref"];
 
     effect(() => {
       setStyle(element, style);
@@ -50,7 +51,7 @@ const jsx = <K extends TagNames>(
   }
 
   return typeof jsxTag === "function"
-    ? jsxTag({ children, ref, style, ...rest } as ComponentProps<K>)
+    ? jsxTag({ children, /*ref,*/ style, ...rest } as ComponentProps<K>)
     : null;
 };
 

@@ -1,8 +1,8 @@
+import { effect } from "@core";
 import { unwrap } from "../router/index";
 import { getTagKey } from "../meta";
 import type { DOMElement } from "../types/types"; 
 import { isFunction } from "../util";
-import { effect } from "@core";
 
 const isTag = (target: DOMElement, ...tagNames: string[]) => {
   return tagNames.some((tag) =>
@@ -14,8 +14,10 @@ const hasHydrationKeys = (target: Element) => {
   return target.querySelector("[data-hk]") !== undefined;
 };
 
+const isHydrated = (target: DOMElement) => target.hasAttribute("data-h");
+
 const hydrateAction = (target: DOMElement, resolvedContent: DOMElement | DOMElement[]) => {
-  if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
+  if (!isHydrated(target)) hydrate(target, resolvedContent);
   else {
     const wrapper = unwrap(resolvedContent);
     target.replaceChildren(...Array.from(wrapper.children) as DOMElement[]);
@@ -32,30 +34,13 @@ export const hydrate = (
   if (content instanceof Promise) {
     content.then((resolvedContent) => {
       hydrateAction(target, resolvedContent);
-      // if (!target.hasAttribute("data-h")) {
-      //   hydrate(target, res);
-      // } else {
-      //   const wrapper = unwrap(res);
-      //   target.replaceChildren(
-      //     ...(Array.from(wrapper.children) as (DOMElement | Text)[]),
-      //   );
-      // }
     });
     return target;
   }
   if (isFunction(content)) {
 		effect(() => {
-			const resolvedContent = content();
-			console.log({ isFunction: isFunction(content), resolvedContent })
-      hydrateAction(target, resolvedContent);
-
-			// if (!target.hasAttribute("data-h")) hydrate(target, resolvedContent);
-			// else {
-			// 	const wrapper = unwrap(resolvedContent);
-			// 	target.replaceChildren(...Array.from(wrapper.children) as DOMElement[]);
-			// }
-
-		})
+      hydrateAction(target, content());
+		});
 		return target;
 	}
 

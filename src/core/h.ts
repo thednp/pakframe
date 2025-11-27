@@ -1,5 +1,5 @@
 // src/h.ts
-import { effect, untrack } from "../core/state";
+import { effect, untrack, createComponent } from "@core";
 import { setAttribute, style } from "./attr";
 import { namespaceElements } from "./ns";
 import type {
@@ -87,29 +87,34 @@ export function h<K extends TagNames>(
   first?: MaybeChildNode | DOMNodeAttributes<PotentialProps<K>, K>,
   ...children: MaybeChildNode[]
 ): OutputElement<K> {
-  const element = createDomElement(tagName);
+  return createComponent(() => {
+    const element = createDomElement(tagName);
 
-  // Handle props if first is an object and not a Node
-  if (isObject(first) && !isNode(first) && !isArray(first)) {
-    Object.entries(first).forEach(([key, value]) => {
-      if (key.startsWith("on")) {
-        if (typeof value !== "function") {
-          return;
+    // Handle props if first is an object and not a Node
+    if (isObject(first) && !isNode(first) && !isArray(first)) {
+      Object.entries(first).forEach(([key, value]) => {
+        if (key.startsWith("on")) {
+          if (typeof value !== "function") {
+            return;
+          }
+          const eventName = key.slice(2)
+            .toLowerCase() as keyof HTMLElementEventMap;
+          listen(element, eventName, value);
+        } else if (key === "style") {
+          effect(() => style(element, value));
+        } else if (key === "ref") {
+          // (first as DOMNodeAttributes<PotentialProps<K>, K>).ref = element;
+          value = element;
+        } else {
+          effect(() => setAttribute(element, key, value));
         }
-        const eventName = key.slice(2)
-          .toLowerCase() as keyof HTMLElementEventMap;
-        listen(element, eventName, value);
-      } else if (key === "style") {
-        effect(() => style(element, value));
-      } else {
-        effect(() => setAttribute(element, key, value));
-      }
-    });
-  } else {
-    add(element, first);
-  }
+      });
+    } else {
+      add(element, first);
+    }
 
-  add(element, children);
+    add(element, children);
 
-  return element;
+    return element;
+  }, {})
 }

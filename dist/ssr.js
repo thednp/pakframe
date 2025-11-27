@@ -1,5 +1,5 @@
 import "virtual:@pakframe/routes";
-import { getStringValue, isArray, isFunction, isNode, isObject, isPlainObject, needsEncoding, urlAttributes } from "./util-B_frEJmo.js";
+import { CONTEXT_OWNER, createComponent, createContext, getOwner, getStringValue, isArray, isFunction, isNode, isObject, isPlainObject, needsEncoding, provide, runWithOwner, urlAttributes, useContext } from "./core-Dnj3owAD.js";
 import { createDocument, escape } from "@thednp/domparser";
 import { basename } from "node:path";
 
@@ -76,16 +76,18 @@ function listen(target, _event, _handler, _options) {
 	return true;
 }
 function h(tagName, first, ...children) {
-	const element = document.createElement(tagName);
-	if (isObject(first) && !isNode(first) && !isArray(first)) Object.entries(first).forEach(([key, value]) => {
-		if (key.startsWith("on")) {
-			if (isFunction(value)) setHydrationKey(element);
-		} else if (key === "style") style(element, value);
-		else setAttribute(element, key, value);
-	});
-	else add(element, first);
-	add(element, children);
-	return element;
+	return createComponent(() => {
+		const element = document.createElement(tagName);
+		if (isObject(first) && !isNode(first) && !isArray(first)) Object.entries(first).forEach(([key, value]) => {
+			if (key.startsWith("on")) {
+				if (isFunction(value)) setHydrationKey(element);
+			} else if (key === "style") style(element, value);
+			else setAttribute(element, key, value);
+		});
+		else add(element, first);
+		add(element, children);
+		return element;
+	}, {});
 }
 
 //#endregion
@@ -172,6 +174,16 @@ function Show({ when, children }) {
 }
 
 //#endregion
+//#region src/ssr/context.ts
+const resetOwner = () => {
+	CONTEXT_OWNER.current = null;
+};
+const renderWithContext = (fn) => {
+	resetOwner();
+	return fn();
+};
+
+//#endregion
 //#region src/ssr/preload.ts
 /**
 * @param file File path
@@ -229,5 +241,5 @@ function renderPreloadLinks(modules, manifest) {
 }
 
 //#endregion
-export { List, Show, add, effect, getStyleObject, h, listen, memo, onMount, renderPreloadLinks, setAttribute, setHydrationKey, signal, store, style, styleToString, untrack };
+export { CONTEXT_OWNER, List, Show, add, createComponent, createContext, effect, getOwner, getStyleObject, h, listen, memo, onMount, provide, renderPreloadLinks, renderWithContext, resetOwner, runWithOwner, setAttribute, setHydrationKey, signal, store, style, styleToString, untrack, useContext };
 //# sourceMappingURL=ssr.js.map

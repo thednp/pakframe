@@ -1,5 +1,6 @@
 export * from "./h";
 export * from "./hydrate";
+export * from "./context";
 export * from "./state";
 export * from "./store";
 export * from "./flow";

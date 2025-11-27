@@ -9,6 +9,7 @@ lerna-debug.log*
 
 experiments
 node_modules
+playground/*/pnpm-lock.yaml
 
 dist-ssr
 *.local

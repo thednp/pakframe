@@ -1,6 +1,7 @@
 // deno-lint-ignore-file no-empty-interface ban-types
 import type {
   // Accessor,
+  Setter,
   CSSProperties,
   DOMElement,
   DOMNodeAttributes,
@@ -11,7 +12,6 @@ import type {
   TagNames,
 } from "../types/types";
 import type { MathMLElementTags } from "../types/MathML";
-import type { Setter } from "../../dist";
 
 export type Component<K extends TagNames> = (
   props: ComponentProps<K>,
@@ -22,7 +22,8 @@ export type ComponentProps<K extends TagNames> =
   & {
     style?: FunctionMaybe<string | CSSProperties>;
     children?: JSX.Element;
-    ref?: Setter<OutputElement<K>>;
+    // ref?: Setter<OutputElement<K>>;
+    ref?: DOMElement | OutputElement<K>;
   };
 
 /**
@@ -108,10 +109,12 @@ export namespace JSX {
   }
 
   interface IntrinsicAttributes {
-    ref?: Setter<DOMElement>;
+    // ref?: Setter<DOMElement>;
+    ref?: DOMElement;
   }
   interface CustomAttributes<T> {
-    ref?: Setter<DOMElement>;
+    // ref?: Setter<DOMElement>;
+    ref?: DOMElement;
   }
   interface ExplicitProperties {}
   interface ExplicitAttributes {}

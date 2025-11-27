@@ -74,6 +74,7 @@ export type DOMNodeAttributes<T extends PotentialProps<K>, K extends TagNames> =
   & {
     style?: FunctionMaybe<string | CSSProperties | undefined | null>;
     class?: FunctionMaybe<string>;
+    ref?: DOMElement;
     // is?: string;
     [key: `on${string}`]: (() => void) | EventListenerObject["handleEvent"];
     [key: `data-${string}`]: FunctionMaybe<Primitive>;

@@ -11,6 +11,7 @@ const main = document.getElementById("main") as HTMLElement;
 // console.log("App()", App())
 
 // add(main, () => App())
+// add(main, App())
 hydrate(main, App)
 // main.replaceChildren(...unwrap(App()).children as HTMLElement[])
 // hydrate(document.body, App())

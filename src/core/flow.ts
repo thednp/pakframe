@@ -1,6 +1,6 @@
 // src/flow.ts
 import type { DOMElement, FunctionMaybe, MaybeChildNode } from "../types/types";
-import { effect, untrack } from "./state";
+import { effect, untrack } from "@core";
 import { isArray, isFunction } from "../util";
 
 export type ListProps<T> = {

@@ -1,54 +1,30 @@
-import { signal } from "pakframe";
-import type { JSX } from "pakframe/jsx-runtime";
+import { effect, signal } from "pakframe";
+import { useTheme } from "../context";
 
-function fibonacci(n: number): number {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
 
 // Global state
 const [count, setCount] = signal(0);
-const [f, setF] = signal(count());
-const doubleCount = () => {
-  const currentCount = count();
-  const result = currentCount * 2;
-  if (currentCount >= 15) {
-    console.warn("Your potato cannot process fibonaci!", f());
-  } else {
-    setF(fibonacci(result));
-  }
-  return result;
-};
 
-export const Counter = () => (
-  <button
-    class="my-button-1"
-    data-count={count}
-    onClick={() => setCount(count() + 1)}
-  >
-    {'Count is '}
-    {count}
-  </button>
-)
+export const Counter = () => {
+  let btnRef;
+  const theme = useTheme();
+  theme.color = "red";
 
-export const MathMLCounter: JSX.Component<"button"> = () => {
+  setTimeout(() => console.log({btnRef}), 500);
+  effect(() => {
+    const currentCount = count();
+    console.log({color: theme.color, btnRef, currentCount})
+  })
+
   return (
     <button
-      class="math-button"
-      onClick={() => setCount(count() + 1)}
+      ref={btnRef}
+      class="my-button-1"
       data-count={count}
+      onClick={() => setCount(count() + 1)}
     >
-      {'Double count: '}
-      <math display="block">
-        <mrow>
-          <mn>{count}</mn>
-          <mo>x</mo>
-          <mn>2</mn>
-          <mo>=</mo>
-          <mn>{doubleCount}</mn>
-        </mrow>
-      </math>
+      {'Count is '}
+      {count}
     </button>
-
-  );
+  )
 }

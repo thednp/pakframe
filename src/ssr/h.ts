@@ -15,6 +15,8 @@ import type {
 import { getStringValue, isArray, isFunction, isNode, isObject } from "../util";
 import type { Accessor } from "../types/types";
 
+import { createComponent } from "@core";
+
 if (typeof document === "undefined") {
   // @ts-expect-error this is server code
   globalThis.document = createDocument();
@@ -77,24 +79,26 @@ export function h<K extends TagNames>(
   first?: MaybeChildNode | DOMNodeAttributes<PotentialProps<K>, K>,
   ...children: MaybeChildNode[]
 ): OutputElement<K> {
-  const element = document.createElement(tagName) as OutputElement<K>;
+  return createComponent(() => {
+    const element = document.createElement(tagName) as OutputElement<K>;
 
-  // Handle props if first is an object and not a Node
-  if (isObject(first) && !isNode(first) && !isArray(first)) {
-    Object.entries(first).forEach(([key, value]) => {
-      if (key.startsWith("on")) {
-        if (isFunction(value)) setHydrationKey(element);
-      } else if (key === "style") {
-        style(element, value);
-      } else {
-        setAttribute(element, key, value);
-      }
-    });
-  } else {
-    add(element, first);
-  }
+    // Handle props if first is an object and not a Node
+    if (isObject(first) && !isNode(first) && !isArray(first)) {
+      Object.entries(first).forEach(([key, value]) => {
+        if (key.startsWith("on")) {
+          if (isFunction(value)) setHydrationKey(element);
+        } else if (key === "style") {
+          style(element, value);
+        } else {
+          setAttribute(element, key, value);
+        }
+      });
+    } else {
+      add(element, first);
+    }
 
-  add(element, children);
+    add(element, children);
 
-  return element;
+    return element;
+  }, {})
 }

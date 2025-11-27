@@ -81,9 +81,6 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
           : typeof (module as unknown as ComponentModule).component === "function"
             ? (module as unknown as ComponentModule & { component: ComponentFn }).component()
             : (module as unknown as ComponentModule).component;
-        // istanbul ignore next - cannot test
-        // const kids = () => cp ? Array.from(unwrap(cp).children) : [];
-        // const kudos = kids();
 
         isConnected = true;
         // istanbul ignore else
@@ -94,11 +91,7 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
         return cp ? Array.from(unwrap(cp).children) : [];
       };
 
-      const finalChildren = children();
-
-      console.log("Router", { root, finalChildren })
-
-      add(wrapper, finalChildren as MaybeChildNode[]);
+      add(wrapper, children() as MaybeChildNode[]);
       return wrapper;
     }
     // this case is when root is for SPA apps
@@ -126,11 +119,6 @@ export const Router = (initialProps = /* istanbul ignore next */ {}) => {
 
     effect(() => {
       const kudos = children();
-      console.log({
-        wrapper,
-        kudos,
-        isConnected
-      });
       // istanbul ignore else
       if (isConnected) add(wrapper, kudos as MaybeChildNode[]);
 

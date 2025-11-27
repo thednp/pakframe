@@ -1,4 +1,4 @@
-import { DOMNodeAttributes, PotentialProps } from "./types-pzt1ZtaD.js";
+import { DOMNodeAttributes, PotentialProps } from "./types-BZyJRwNQ.js";
 
 //#region src/meta/types.d.ts
 type SupportedHeadTags = HTMLTitleElement | HTMLMetaElement | HTMLScriptElement | HTMLLinkElement | HTMLStyleElement;
